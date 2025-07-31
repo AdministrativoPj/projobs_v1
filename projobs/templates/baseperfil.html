@@ -1,0 +1,155 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Panel ProJobs{% endblock %}</title>
+
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/style_crear_oferta.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/style_editar_perfil.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/perfil_trabajador.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/subir_evidencia.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/style_postular_oferta.css' %}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  {% if usuario.rol == 1 %}
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+  {% endif %}
+
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body class="{% if usuario.rol == 1 %}admin-panel{% endif %}">
+
+  <header class="topbar">
+    <div class="logo">
+      <img src="{% static 'img/logotipo.png' %}" alt="Logo" class="logo-img" />
+      <span>ProJobs</span>
+    </div>
+    <div class="logout-container">
+      <div class="notificacion-wrapper" onclick="toggleNotificaciones()" style="position: relative;">
+        <i class="fa-solid fa-bell fa-lg"></i>
+        {% if cantidad_mensajes_no_leidos > 0 %}
+          <span id="notiCount" class="notificacion-badge">{{ cantidad_mensajes_no_leidos }}</span>
+        {% endif %}
+      </div>
+      <div id="panelNotificaciones" class="panel-notificaciones"></div>
+      <a href="{% url 'cerrar_sesion' %}" class="logout-btn">Cerrar sesión</a>
+    </div>
+  </header>
+
+  <!-- Menú hamburguesa en móviles -->
+  <div class="hamburger" onclick="toggleSidebar()">
+    <i class="fa-solid fa-bars"></i>
+  </div>
+
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    {% if usuario.rol == 1 %}
+      <a href="{% url 'admin_usuarios' %}" class="nav-item"><i class="fa-solid fa-users-cog"></i> Administrar usuarios</a>
+      <a href="{% url 'admin_dashboard_graficos' %}" class="nav-item"><i class="fa-solid fa-chart-pie"></i> Dashboard gráficos</a>
+      <a href="{% url 'admin_postulaciones' %}" class="nav-item"><i class="fa-solid fa-tasks"></i> Administrar postulaciones</a>
+      <a href="{% url 'admin_ofertas' %}" class="nav-item"><i class="fa-solid fa-briefcase"></i> Administrar ofertas</a>
+      <a href="{% url 'admin_calificaciones' %}" class="nav-item"><i class="fa-solid fa-star"></i> Administrar calificaciones</a>
+      <a href="{% url 'admin_evidencias' %}" class="nav-item"><i class="fa-solid fa-folder-open"></i> Administrar evidencias</a>
+      <a href="{% url 'admin_chats' %}" class="nav-item"><i class="fa-solid fa-comments"></i> Ver chats</a>
+    {% else %}
+      <a href="{% url 'perfilusuario' %}" class="nav-item"><i class="fa-solid fa-user"></i> Mi perfil</a>
+      <a href="{% url 'crear_oferta' %}" class="nav-item"><i class="fa-solid fa-briefcase"></i> Crear ofertas</a>
+      <a href="{% url 'historial_postulaciones' %}" class="nav-item"><i class="fa-solid fa-clock"></i> Historial</a>
+      {% if usuario.rol == 2 %}
+        <a href="{% url 'contratos_usuario' %}" class="nav-item"><i class="fa-solid fa-file-signature"></i> Contratos</a>
+        <a href="{% url 'ver_trabajadores' %}" class="nav-item"><i class="fa-solid fa-users"></i> Trabajadores</a>
+      {% endif %}
+      {% if usuario.rol == 3 %}
+        <a href="{% url 'lista_ofertas' %}" class="nav-item"><i class="fa-solid fa-clipboard-check"></i> Postularme</a>
+        <a href="{% url 'subir_evidencia' %}" class="nav-item"><i class="fa-solid fa-upload"></i> Subir Evidencia</a>
+      {% endif %}
+    {% endif %}
+  </nav>
+
+  <main class="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      const hamburger = document.querySelector(".hamburger");
+
+      sidebar.classList.toggle("active");
+      hamburger.style.display = sidebar.classList.contains("active") ? "none" : "flex";
+    }
+
+    // Cerrar sidebar al hacer clic en un ítem (solo en móviles)
+    document.querySelectorAll(".nav-item").forEach(item => {
+      item.addEventListener("click", () => {
+        const sidebar = document.getElementById("sidebar");
+        const hamburger = document.querySelector(".hamburger");
+
+        if (window.innerWidth <= 768) {
+          sidebar.classList.remove("active");
+          hamburger.style.display = "flex";
+        }
+      });
+    });
+
+    async function toggleNotificaciones() {
+      const panel = document.getElementById("panelNotificaciones");
+      const badge = document.getElementById("notiCount");
+
+      if (panel.style.display === "block") {
+        panel.style.display = "none";
+        return;
+      }
+
+      try {
+        const response = await fetch("{% url 'obtener_notificaciones' %}");
+        const data = await response.json();
+
+        panel.innerHTML = data.notificaciones.length > 0
+          ? data.notificaciones.map(n => `
+              <div class="noti-item">
+                <a href="${n.url}">
+                  <strong>${n.mensaje}</strong><br />
+                  <small>${n.fecha}</small>
+                </a>
+              </div>
+            `).join('')
+          : '<div class="noti-item"><em>No hay notificaciones nuevas.</em></div>';
+
+        panel.style.display = "block";
+
+        await fetch("{% url 'marcar_notificaciones_leidas' %}", {
+          method: "POST",
+          headers: {"X-CSRFToken": getCookie("csrftoken")}
+        });
+
+        if (badge) badge.style.display = "none";
+
+      } catch (error) {
+        console.error("Error al cargar notificaciones", error);
+        panel.innerHTML = '<div class="noti-item"><em>Error al cargar notificaciones.</em></div>';
+        panel.style.display = "block";
+      }
+    }
+
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+          cookie = cookie.trim();
+          if (cookie.startsWith(name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+  </script>
+</body>
+</html>

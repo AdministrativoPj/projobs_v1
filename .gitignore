@@ -1,0 +1,46 @@
+.en# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Caches
+*.log
+*.pot
+*.pyc
+*.pyo
+*.db
+*.sqlite3
+*.coverage
+
+# Environment files
+.env
+.env.*
+
+# Django stuff:
+db.sqlite3
+media/
+staticfiles/
+local_settings.py
+
+# VSCode / IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+*.orig
+
+# Certificados o claves privadas
+cert.*
+*.pem
+*.key
+
+# Node / Frontend builds (por si tienes algo)
+node_modules/
+build/
+dist/

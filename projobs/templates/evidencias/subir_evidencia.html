@@ -1,0 +1,42 @@
+{% extends 'baseperfil.html' %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/subir_evidencia.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="subir-evidencia-container">
+  <h2>Subir Evidencia</h2>
+
+  {% if messages %}
+    <div class="contenedor-mensajes">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <form method="post" enctype="multipart/form-data" class="form-subir-evidencia">
+    {% csrf_token %}
+
+    <label for="postulacion_id">Selecciona la postulación:</label>
+    <select name="postulacion_id" id="postulacion_id" required>
+      <option value="" disabled selected>-- Selecciona una opción --</option>
+      {% for p in postulaciones %}
+        <option value="{{ p.id }}">{{ p.oferta.titulo }}</option>
+      {% endfor %}
+    </select>
+
+    <label for="archivo">Archivo de evidencia:</label>
+    <input type="file" name="archivo" id="archivo" accept=".jpg,.jpeg,.png,.pdf,.docx,.webp" required>
+
+    <label for="descripcion">Descripción (opcional):</label>
+    <textarea name="descripcion" id="descripcion" rows="4" placeholder="Describe la evidencia..."></textarea>
+
+    <button type="submit" class="btn-evidencia-submit">Subir Evidencia</button>
+  </form>
+</div>
+{% endblock %}

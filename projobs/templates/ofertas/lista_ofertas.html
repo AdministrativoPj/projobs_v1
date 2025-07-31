@@ -1,0 +1,59 @@
+{% extends 'baseperfil.html' %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/style_postular_oferta.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="ofertas-container">
+  <h2>Ofertas laborales disponibles</h2>
+
+  <!-- 🔥 Filtro por categoría -->
+  <form method="get" class="filtro-form">
+    <label for="categoria">Filtrar por categoría:</label>
+    <select name="categoria" id="categoria" onchange="this.form.submit()">
+      <option value="">Todas</option>
+      <option value="Electricista" {% if categoria_seleccionada == "Electricista" %}selected{% endif %}>Electricista</option>
+      <option value="Diseñador Gráfico" {% if categoria_seleccionada == "Diseñador Gráfico" %}selected{% endif %}>Diseñador Gráfico</option>
+      <option value="Programador" {% if categoria_seleccionada == "Programador" %}selected{% endif %}>Programador</option>
+      <option value="Plomero" {% if categoria_seleccionada == "Plomero" %}selected{% endif %}>Plomero</option>
+      <option value="Jardinero" {% if categoria_seleccionada == "Jardinero" %}selected{% endif %}>Jardinero</option>
+      <option value="Otro" {% if categoria_seleccionada == "Otro" %}selected{% endif %}>Otro</option>
+    </select>
+  </form>
+
+  {% for message in messages %}
+    <div class="msg">{{ message }}</div>
+  {% endfor %}
+
+  {% if ofertas %}
+    <div class="contenedor-ofertas">
+      {% for oferta in ofertas %}
+        <div class="oferta-card {% if oferta.estado != 'abierta' %}cerrada{% endif %}">
+          <div class="oferta-titulo">{{ oferta.titulo }}</div>
+          <div class="oferta-ubicacion"><i class="fas fa-map-marker-alt"></i> {{ oferta.ubicacion }}</div>
+          <div class="oferta-desc">{{ oferta.descripcion }}</div>
+
+          <!-- ✅ Contador de postulaciones -->
+          <div class="oferta-contador">
+            {{ oferta.num_postulaciones }} postulados / {{ oferta.max_postulaciones }} máximo
+          </div>
+
+          {% if oferta.estado == 'abierta' %}
+            <form method="post">
+              {% csrf_token %}
+              <input type="hidden" name="id_oferta" value="{{ oferta.id }}">
+              <button type="submit" class="postular-btn">Postularme</button>
+            </form>
+          {% else %}
+            <div class="cerrada-label">Oferta cerrada</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No hay ofertas disponibles por el momento.</p>
+  {% endif %}
+</div>
+{% endblock %}
