@@ -1,4 +1,6 @@
 from django.urls import path
+from django.views.generic import TemplateView
+
 from . import views
 
 urlpatterns = [
@@ -52,7 +54,9 @@ urlpatterns = [
     path('admin-chats/', views.admin_chats, name='admin_chats'),
     path('admin-chats/<int:usuario1_id>/<int:usuario2_id>/', views.admin_ver_chat, name='admin_ver_chat'),
 
-
-
+    #politica derivacidad
+    
+    path('privacidad/', TemplateView.as_view(template_name='politica_privacidad.html'), name='privacidad'),
+    path('eliminar-datos/', TemplateView.as_view(template_name='eliminar_datos.html'), name='eliminar_datos'),
 
 ]

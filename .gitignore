@@ -8,8 +8,7 @@ __pycache__/
 *.pot
 *.pyc
 *.pyo
-*.db
-*.sqlite3
+
 *.coverage
 
 # Environment files
