@@ -1,5 +1,5 @@
-# projobs/pipeline.py
 from projobs.models import Usuario
+from django.contrib.auth.models import User
 
 def create_usuario_record(backend, user, response, *args, **kwargs):
     email = ''
@@ -19,13 +19,22 @@ def create_usuario_record(backend, user, response, *args, **kwargs):
         first_name = response.get('given_name', '')
         last_name = response.get('family_name', '')
 
-    if email:
-        # Esto se asegura de crear el usuario solo si no existe
-        if not Usuario.objects.filter(correo=email).exists():
-            Usuario.objects.create(
-                nombre=first_name or '',
-                apellido=last_name or '',
-                correo=email,
-                password='',
-                rol=2
-            )
+    # Crea usuario de tu modelo personalizado si no existe
+    if email and not Usuario.objects.filter(correo=email).exists():
+        Usuario.objects.create(
+            nombre=first_name or '',
+            apellido=last_name or '',
+            correo=email,
+            password='',  # sin password porque usa social login
+            rol=2
+        )
+
+    # También crea un usuario Django si no existe
+    if email and not User.objects.filter(username=email).exists():
+        User.objects.create_user(
+            username=email,
+            email=email,
+            password=None,  # sin password
+            first_name=first_name,
+            last_name=last_name
+        )
