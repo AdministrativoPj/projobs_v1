@@ -1,8 +1,15 @@
 from django.urls import path
 from django.views.generic import TemplateView
+from django.http import JsonResponse
 
 from . import views
 
+
+def eliminar_datos_facebook(request):
+    return JsonResponse({
+        "mensaje": "Si deseas eliminar tus datos, por favor contáctanos a projobsadmin2025@gmail.com."
+    })
+    
 urlpatterns = [
     path('', views.index, name='index'),
     path('inicioSesion/', views.inicioSesion, name='inicioSesion'),
