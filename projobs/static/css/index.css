@@ -1,22 +1,24 @@
+/* -------------------- ESTILO GLOBAL -------------------- */
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Poppins', sans-serif; /* Fuente moderna y legible */
   margin: 0;
-  scroll-behavior: smooth;
-  background-color: #f8f9fa;
+  scroll-behavior: smooth; /* Desplazamiento suave al hacer scroll */
+  background-color: #f8f9fa; /* Color de fondo neutro */
 }
 
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
+  max-width: 1200px;  /* Ancho máximo del contenido */
+  margin: 0 auto;     /* Centrado horizontal */
+  padding: 0 1rem;    /* Espaciado lateral */
 }
 
+/* -------------------- SECCIÓN HERO (INICIO) -------------------- */
 .hero-section {
-  padding: 6rem 1rem;
-  background: linear-gradient(to right, #03A688, #028674);
+  padding: 6rem 1rem;  /* Espaciado interno vertical */
+  background: linear-gradient(to right, #03A688, #028674); /* Degradado verde institucional */
   color: white;
   text-align: center;
-  border-radius: 0 0 20px 20px;
+  border-radius: 0 0 20px 20px; /* Bordes redondeados inferiores */
 }
 
 .hero-section h1 {
@@ -25,7 +27,7 @@ body {
 }
 
 .hero-section span {
-  color: #fffacd;
+  color: #fffacd; /* Resaltado de texto dentro del h1 */
 }
 
 .hero-section p {
@@ -33,6 +35,7 @@ body {
   font-size: 1.1rem;
 }
 
+/* -------------------- SECCIONES GENERALES -------------------- */
 section {
   padding: 4rem 1rem;
   text-align: center;
@@ -48,6 +51,7 @@ section p {
   margin: 0 auto;
 }
 
+/* -------------------- CARDS -------------------- */
 .card-container {
   display: flex;
   justify-content: center;
@@ -60,21 +64,22 @@ section p {
   background: white;
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05); /* Sombra sutil */
   width: 280px;
   transition: transform 0.3s ease;
 }
 
 .card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-5px); /* Efecto al pasar el mouse */
 }
 
 .card i {
-  color: #028674;
+  color: #028674; /* Color de íconos institucional */
   margin-bottom: 0.75rem;
   font-size: 2rem;
 }
 
+/* -------------------- FORMULARIOS -------------------- */
 form {
   max-width: 600px;
   margin: 2rem auto;
@@ -88,7 +93,7 @@ form textarea {
   padding: 0.75rem;
   border: 1px solid #ccc;
   border-radius: 8px;
-  font-family: inherit;
+  font-family: inherit; /* Hereda fuente global */
 }
 
 form button {
@@ -102,9 +107,10 @@ form button {
 }
 
 form button:hover {
-  background-color: #025f58;
+  background-color: #025f58; /* Oscurece al hacer hover */
 }
 
+/* -------------------- RESPONSIVE -------------------- */
 @media (max-width: 768px) {
   .hero-section h1 {
     font-size: 2rem;

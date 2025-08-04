@@ -1,29 +1,44 @@
+{# Extiende la plantilla base de usuario para mantener la estructura general #}
 {% extends 'baseperfil.html' %}
 {% load static %}
 
+{# Define el título de la página en la pestaña del navegador #}
 {% block title %}Dashboard Admin{% endblock %}
 
+{# Contenido principal del dashboard #}
 {% block content %}
 <div class="container mx-auto mt-10">
+  {# Título principal del panel de estadísticas #}
   <h2 class="text-4xl font-bold mb-10 text-center">📊 Panel Estadístico - Admin</h2>
 
+  {# Contenedor de todas las tarjetas con los gráficos, con diseño responsive de una o dos columnas #}
   <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+
+    {# Gráfico de distribución de usuarios por rol (admin, cliente, trabajador) #}
     <div class="p-6 bg-white rounded-xl shadow-lg">
       <h3 class="text-xl font-semibold mb-4 text-center">Usuarios por Rol</h3>
       <canvas id="graficoUsuarios"></canvas>
     </div>
+
+    {# Gráfico de barras para ofertas laborales por categoría #}
     <div class="p-6 bg-white rounded-xl shadow-lg">
       <h3 class="text-xl font-semibold mb-4 text-center">Ofertas por Categoría</h3>
       <canvas id="graficoOfertas"></canvas>
     </div>
+
+    {# Gráfico de torta para estados de postulaciones (pendiente, aceptado, rechazado) #}
     <div class="p-6 bg-white rounded-xl shadow-lg">
       <h3 class="text-xl font-semibold mb-4 text-center">Postulaciones por Estado</h3>
       <canvas id="graficoPostulaciones"></canvas>
     </div>
+
+    {# Gráfico de barras con el número de calificaciones por trabajador #}
     <div class="p-6 bg-white rounded-xl shadow-lg">
       <h3 class="text-xl font-semibold mb-4 text-center">Calificaciones por Trabajador</h3>
       <canvas id="graficoCalificaciones"></canvas>
     </div>
+
+    {# Gráfico de área polar que muestra las evidencias subidas por trabajador #}
     <div class="p-6 bg-white rounded-xl shadow-lg">
       <h3 class="text-xl font-semibold mb-4 text-center">Evidencias por Trabajador</h3>
       <canvas id="graficoEvidencias"></canvas>
@@ -31,8 +46,11 @@
   </div>
 </div>
 
+{# Carga de librería Chart.js desde CDN para generar gráficos #}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
+  // Función auxiliar para generar colores aleatorios
   const randomColors = (num) => {
     let colors = [];
     for (let i = 0; i < num; i++) {
@@ -44,6 +62,7 @@
     return colors;
   }
 
+  // Gráfico de usuarios por rol
   const dataUsuarios = {{ data_usuarios|safe }};
   new Chart(document.getElementById('graficoUsuarios'), {
     type: 'doughnut',
@@ -64,6 +83,7 @@
     }
   });
 
+  // Gráfico de ofertas por categoría
   const dataOfertas = {{ data_ofertas|safe }};
   new Chart(document.getElementById('graficoOfertas'), {
     type: 'bar',
@@ -84,6 +104,7 @@
     }
   });
 
+  // Gráfico de postulaciones por estado
   const dataPostulaciones = {{ data_postulaciones|safe }};
   new Chart(document.getElementById('graficoPostulaciones'), {
     type: 'pie',
@@ -100,6 +121,7 @@
     }
   });
 
+  // Gráfico de calificaciones por trabajador
   const dataCalificaciones = {{ data_calificaciones|safe }};
   new Chart(document.getElementById('graficoCalificaciones'), {
     type: 'bar',
@@ -118,6 +140,7 @@
     }
   });
 
+  // Gráfico de evidencias subidas por trabajador
   const dataEvidencias = {{ data_evidencias|safe }};
   new Chart(document.getElementById('graficoEvidencias'), {
     type: 'polarArea',

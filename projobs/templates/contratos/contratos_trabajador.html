@@ -1,0 +1,114 @@
+{% extends 'baseperfil.html' %}  {# Hereda la estructura base del perfil #}
+
+{% block extra_css %}
+<style>
+  /* Contenedor principal de los contratos */
+  .contratos-container {
+    max-width: 1000px;
+    margin: 100px auto;
+    padding: 2rem;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  /* Tarjeta individual de cada contrato */
+  .contrato-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 1.5rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  /* Encabezado de la tarjeta del contrato */
+  .contrato-header {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  /* Título del contrato */
+  .contrato-titulo {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #02786e;
+  }
+
+  /* Estado del contrato (visual activo) */
+  .estado {
+    background-color: #2ecc71;
+    color: #fff;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    text-transform: capitalize;
+  }
+
+  /* Información detallada del contrato */
+  .contrato-datos p {
+    margin: 4px 0;
+  }
+
+  /* Pie de la tarjeta: acciones como botón de chat */
+  .contrato-footer {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  /* Botón para contactar al cliente vía chat */
+  .btn-chat {
+    background-color: #02786e;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .btn-chat:hover {
+    background-color: #025e57;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="contratos-container">
+  <h2 class="contrato-titulo">📄 Mis contratos activos</h2>
+
+  {% if contratos %}
+    {# Itera sobre la lista de contratos y renderiza cada uno #}
+    {% for c in contratos %}
+      <div class="contrato-card">
+        <div class="contrato-header">
+          <div class="contrato-titulo">{{ c.oferta.titulo }}</div>
+          <div class="estado">Activo</div>
+        </div>
+        <div class="contrato-datos">
+          <p><strong>Cliente:</strong> {{ c.oferta.cliente.nombre }} {{ c.oferta.cliente.apellido }}</p>
+          <p><strong>Correo:</strong> {{ c.oferta.cliente.correo }}</p>
+          <p><strong>Ubicación:</strong> {{ c.oferta.ubicacion }}</p>
+          <p><strong>Modalidad:</strong> {{ c.oferta.get_modo_trabajo_display }}</p>
+          <p><strong>Fecha límite:</strong> {{ c.oferta.fecha_limite }}</p>
+          <p><strong>Fecha de postulación:</strong> {{ c.fecha_postulacion|date:"Y-m-d H:i" }}</p>
+        </div>
+        <div class="contrato-footer">
+          <a href="{% url 'chat_con_usuario' c.oferta.cliente.id %}" class="btn-chat">💬 Contactar cliente</a>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    {# Mensaje mostrado si no hay contratos activos #}
+    <p>No tienes contratos activos en este momento.</p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,25 +1,31 @@
+/* ================================================
+   CONTENEDOR PRINCIPAL DE SUBIDA DE EVIDENCIA
+================================================= */
 .subir-evidencia-container {
   max-width: 800px;
   margin: 3rem auto;
   background-color: #ffffff;
   padding: 3rem;
   border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1); /* sombra suave */
   box-sizing: border-box;
   transition: all 0.3s ease;
 }
 
 .subir-evidencia-container h2 {
   text-align: center;
-  color: #02786e;
+  color: #02786e; /* verde institucional */
   margin-bottom: 2rem;
   font-size: 2rem;
   font-weight: 700;
 }
 
+/* ================================================
+   FORMULARIO DE SUBIDA DE EVIDENCIA
+================================================= */
 .form-subir-evidencia {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 1fr 2fr; /* Dos columnas: etiqueta e input */
   gap: 1.5rem 2rem;
   align-items: center;
 }
@@ -30,6 +36,7 @@
   font-size: 1.1rem;
 }
 
+/* Inputs, selects y textareas dentro del formulario */
 .form-subir-evidencia select,
 .form-subir-evidencia input[type="file"],
 .form-subir-evidencia textarea {
@@ -42,13 +49,17 @@
   background-color: #f7f9fa;
 }
 
+/* Ajuste específico para el área de texto */
 .form-subir-evidencia textarea {
   resize: vertical;
   min-height: 120px;
 }
 
+/* ================================================
+   BOTÓN DE ENVÍO
+================================================= */
 .btn-evidencia-submit {
-  grid-column: 2;
+  grid-column: 2; /* Se posiciona en la segunda columna */
   background-color: #02786e;
   color: white;
   padding: 0.75rem 1.5rem;
@@ -64,6 +75,9 @@
   background-color: #035c52;
 }
 
+/* ================================================
+   ALERTAS / MENSAJES DE ESTADO
+================================================= */
 .alert {
   padding: 1rem;
   margin-bottom: 1rem;
@@ -83,6 +97,9 @@
   color: #721c24;
 }
 
+/* ================================================
+   RESPONSIVE (TABLET)
+================================================= */
 @media (max-width: 768px) {
   .subir-evidencia-container {
     padding: 2rem 1rem;
@@ -90,7 +107,7 @@
   }
 
   .form-subir-evidencia {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Se convierte en una sola columna */
   }
 
   .btn-evidencia-submit {
@@ -100,6 +117,9 @@
   }
 }
 
+/* ================================================
+   RESPONSIVE (MÓVIL)
+================================================= */
 @media (max-width: 480px) {
   .subir-evidencia-container h2 {
     font-size: 1.5rem;

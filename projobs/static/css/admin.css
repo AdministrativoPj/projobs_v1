@@ -1,57 +1,67 @@
+/* Estilo general para el panel de administración */
 body.admin-panel {
-  background-color: #f5f7fa;
-  font-family: 'Poppins', sans-serif;
+  background-color: #f5f7fa; /* Fondo claro para todo el panel */
+  font-family: 'Poppins', sans-serif; /* Fuente moderna y legible */
 }
 
+/* Contenedores principales del panel de administración */
 .admin-panel .container,
 .admin-panel .admin-container {
-  background: #ffffff;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  background: #ffffff; /* Fondo blanco para separar visualmente el contenido */
+  padding: 2rem; /* Espaciado interno generoso */
+  border-radius: 8px; /* Bordes redondeados para un look más moderno */
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05); /* Sombra suave para elevación */
 }
 
+/* Títulos dentro del panel */
 .admin-panel h2 {
-  color: #1f2a40;
+  color: #1f2a40; /* Color oscuro para buena legibilidad */
 }
 
+/* Estilos para la tabla del panel */
 .admin-panel table {
-  width: 100%;
-  border-collapse: collapse;
+  width: 100%; /* Ocupa todo el ancho disponible */
+  border-collapse: collapse; /* Elimina espacios entre bordes */
 }
 
+/* Celdas de encabezado y cuerpo de tabla */
 .admin-panel th,
 .admin-panel td {
-  padding: 0.75rem 1rem;
-  text-align: left;
-  border-bottom: 1px solid #e0e0e0;
+  padding: 0.75rem 1rem; /* Espaciado interno cómodo */
+  text-align: left; /* Alineación de texto por defecto */
+  border-bottom: 1px solid #e0e0e0; /* Línea divisoria suave */
 }
 
+/* Encabezado de la tabla con fondo gris azulado */
 .admin-panel thead {
-  background-color: #e3eaf3;
+  background-color: #e3eaf3; /* Color tenue para distinguir encabezado */
 }
 
+/* Fila alterna para mejor lectura en tablas largas */
 .admin-panel tbody tr:nth-child(even) {
-  background-color: #f9fbfc;
+  background-color: #f9fbfc; /* Color de fondo para filas pares */
 }
 
+/* Clase utilitaria para aplicar sombra */
 .admin-panel .shadow {
-  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  box-shadow: 0 0 10px rgba(0,0,0,0.05); /* Sombra leve */
 }
 
+/* Estilos para elementos interactivos */
 .admin-panel select,
 .admin-panel button {
-  font-size: 0.9rem;
-  border-radius: 4px;
-  padding: 0.3rem 0.6rem;
-  cursor: pointer;
+  font-size: 0.9rem; /* Tamaño de fuente estándar */
+  border-radius: 4px; /* Bordes redondeados */
+  padding: 0.3rem 0.6rem; /* Espaciado interno */
+  cursor: pointer; /* Cursor en forma de mano */
 }
 
+/* Estilo para mensajes informativos */
 .admin-panel .msg {
-  background: #e0f2fe;
-  padding: 0.5rem;
-  border: 1px solid #38bdf8;
-  border-radius: 4px;
-  margin-bottom: 1rem;
-  color: #0369a1;
+  background: #e0f2fe; /* Fondo azul claro */
+  padding: 0.5rem; /* Espaciado interno */
+  border: 1px solid #38bdf8; /* Borde azul más fuerte */
+  border-radius: 4px; /* Bordes redondeados */
+  margin-bottom: 1rem; /* Separación inferior */
+  color: #0369a1; /* Texto azul para énfasis */
 }

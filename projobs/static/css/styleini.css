@@ -1,19 +1,26 @@
+/* ================================================
+   ESTILOS GENERALES
+================================================= */
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
-  background: linear-gradient(to right, #028674, #03a688);
+  background: linear-gradient(to right, #028674, #03a688); /* Fondo con gradiente */
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
 }
 
+/* ================================================
+   CONTENEDOR PRINCIPAL
+================================================= */
 .auth-wrapper {
   width: 100%;
   max-width: 960px;
   padding: 1rem;
 }
 
+/* Tarjeta que contiene la imagen y el formulario */
 .auth-card {
   display: flex;
   background-color: #fff;
@@ -23,6 +30,9 @@ body {
   min-height: 500px;
 }
 
+/* ================================================
+   SECCIÓN DE IMAGEN DE AUTENTICACIÓN
+================================================= */
 .auth-image {
   background: #e6f9f7;
   flex: 1;
@@ -46,6 +56,9 @@ body {
   transform: scale(1.05);
 }
 
+/* ================================================
+   FORMULARIO DE AUTENTICACIÓN
+================================================= */
 .auth-form {
   flex: 1;
   padding: 3rem 2rem;
@@ -88,53 +101,68 @@ body {
   background-color: #025f58;
 }
 
-/* Mensajes con colores por tipo */
+/* ================================================
+   MENSAJES DE VALIDACIÓN
+================================================= */
 .messages {
   list-style: none;
   padding: 0;
   margin-bottom: 1rem;
   font-size: 0.9rem;
 }
+
 .messages li {
   padding: 10px;
   border-radius: 6px;
   margin-bottom: 8px;
   text-align: center;
 }
+
+/* Colores según tipo de mensaje */
 .messages li.success {
   background-color: #d4edda;
   color: #155724;
   border: 1px solid #c3e6cb;
 }
+
 .messages li.error {
   background-color: #f8d7da;
   color: #721c24;
   border: 1px solid #f5c6cb;
 }
+
 .messages li.warning {
   background-color: #fff3cd;
   color: #856404;
   border: 1px solid #ffeeba;
 }
+
 .messages li.info {
   background-color: #d1ecf1;
   color: #0c5460;
   border: 1px solid #bee5eb;
 }
 
-/* RESPONSIVO */
+/* ================================================
+   RESPONSIVE
+================================================= */
 @media (max-width: 768px) {
   .auth-card {
     flex-direction: column-reverse;
   }
+
   .auth-image {
     padding: 1.5rem;
   }
+
   .auth-form {
     padding: 2rem 1.5rem;
   }
 }
 
+/* ================================================
+   DROPZONE PARA SUBIDA DE ARCHIVOS (imagen/avatar)
+================================================= */
 .dropzone {
   border: 2px dashed #aaa;
   border-radius: 10px;
@@ -145,10 +173,15 @@ body {
   margin-top: 15px;
   background-color: #f9f9f9;
 }
+
 .dropzone.dragging {
   background-color: #e0e0e0;
   border-color: #555;
 }
+
+/* ================================================
+   SELECTOR DE ROL PERSONALIZADO
+================================================= */
 .select-rol {
   width: 100%;
   padding: 12px 15px;
@@ -164,6 +197,7 @@ body {
   box-shadow: none;
   transition: border-color 0.3s, box-shadow 0.3s;
 }
+
 .select-rol:focus {
   border-color: #2563eb;
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);

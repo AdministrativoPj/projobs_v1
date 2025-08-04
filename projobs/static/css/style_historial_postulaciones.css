@@ -1,0 +1,175 @@
+/* =========================== */
+/* HISTORIAL DE POSTULACIONES */
+/* =========================== */
+
+/* Contenedor principal del historial */
+.ofertas-container.historial-postulaciones {
+  padding: 2rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Título principal */
+.ofertas-container.historial-postulaciones h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #02786e;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* Tarjeta individual por cada postulación */
+.oferta-card {
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-left: 5px solid #02786e;
+  border-radius: 10px;
+  padding: 1.2rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+  margin-bottom: 20px;
+}
+
+.oferta-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Cabecera de la oferta: título y fecha */
+.oferta-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.oferta-titulo {
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: #02786e;
+}
+
+.oferta-ubicacion {
+  font-size: 0.9rem;
+  color: #777;
+}
+
+/* Descripción del contenido */
+.oferta-desc {
+  font-size: 0.95rem;
+  color: #333;
+  margin: 0.8rem 0;
+}
+
+/* Enlace al perfil del trabajador */
+.enlace-perfil {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.enlace-perfil:hover {
+  text-decoration: underline;
+}
+
+/* Estado de la postulación (badge de color) */
+.estado {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: white;
+  display: inline-block;
+}
+
+.estado-pendiente {
+  background-color: #f1c40f;  /* Amarillo */
+}
+
+.estado-aceptado {
+  background-color: #2ecc71;  /* Verde */
+}
+
+.estado-rechazado {
+  background-color: #e74c3c;  /* Rojo */
+}
+
+.estado-finalizado {
+  background-color: #34495e;  /* Gris oscuro */
+}
+
+/* Formulario para cambiar estado o eliminar postulación */
+.historial-form {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.historial-form select {
+  padding: 6px 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* Botones comunes: chatear, actualizar o eliminar */
+.postular-btn,
+.postular-btn-ac,
+.postular-btn-borrar {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  color: white;
+}
+
+/* Botón de chatear */
+.postular-btn {
+  background-color: #02781c;
+}
+
+.postular-btn:hover {
+  background-color: #035c52;
+}
+
+/* Botón de actualizar estado */
+.postular-btn-ac {
+  background-color: #146d6d;
+}
+
+.postular-btn-ac:hover {
+  background-color: #035c52;
+}
+
+/* Botón de eliminar */
+.postular-btn-borrar {
+  background-color: #9c0202;
+}
+
+.postular-btn-borrar:hover {
+  background-color: #590000;
+}
+
+/* =========================== */
+/* RESPONSIVE PARA MÓVILES */
+/* =========================== */
+@media (max-width: 768px) {
+  .historial-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .postular-btn,
+  .postular-btn-ac,
+  .postular-btn-borrar {
+    width: 100%;
+    text-align: center;
+  }
+
+  .oferta-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}

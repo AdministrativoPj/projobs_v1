@@ -1,17 +1,23 @@
-{% load static %}
+{% load static %} {# Carga de archivos estáticos en Django #}
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <title>Iniciar sesión - ProJobs</title>
+
+  {# Archivo de estilos personalizado #}
   <link rel="stylesheet" href="{% static 'css/styleini.css' %}">
+
+  {# Fuente desde Google Fonts #}
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
+  {# Contenedor principal de autenticación #}
   <div class="auth-wrapper">
     <div class="auth-card">
 
+      {# Logo de ProJobs clickeable que redirige al index #}
       <div class="auth-image">
         <a href="{% url 'index' %}">
           <img src="{% static 'img/logotipo.png' %}" alt="ProJobs Logo">
@@ -21,8 +27,11 @@
       <div class="auth-form">
         <h2>Bienvenido</h2>
 
+        {# Formulario de inicio de sesión #}
         <form method="POST">
           {% csrf_token %}
+
+          {# Muestra mensajes del sistema (éxito, error, etc.) #}
           {% if messages %}
             <ul class="messages">
               {% for message in messages %}
@@ -36,10 +45,14 @@
             </ul>
           {% endif %}
 
+          {# Campos de entrada #}
           <input type="email" name="correo" placeholder="Correo electrónico" required>
           <input type="password" name="password" placeholder="Contraseña" required>
+
+          {# Botón de envío #}
           <button type="submit">Iniciar sesión</button>
 
+          {# Enlace para recuperación de contraseña #}
           <div style="margin-top: 15px; text-align: center;">
             <a href="{% url 'recuperar_password' %}" style="font-size: 0.9rem; color: #3498db;">
               ¿Olvidaste tu contraseña?
@@ -49,30 +62,34 @@
 
         <hr style="margin: 20px 0;">
 
-        {% comment %} <div class="social-login">
+        {# Botones de redes sociales comentados temporalmente #}
+        {% comment %}
+        <div class="social-login">
           <a href="{% url 'social:begin' 'google-oauth2' %}" class="social-btn google">
             Iniciar sesión con Google
           </a>
           <a href="{% url 'social:begin' 'facebook' %}" class="social-btn facebook">
             Iniciar sesión con Facebook
           </a>
-        </div> {% endcomment %}
-
+        </div>
+        {% endcomment %}
       </div>
-
     </div>
   </div>
 
+  {# Estilos para mensajes de alerta y botones sociales #}
   <style>
-    .msg-success { color: #2e7d32; }  /* verde */
-    .msg-warning { color: #ff8f00; }  /* naranja */
-    .msg-error   { color: #d32f2f; }  /* rojo */
-    .msg-info    { color: #1976d2; }  /* azul */
+    .msg-success { color: #2e7d32; }  /* Mensaje de éxito (verde) */
+    .msg-warning { color: #ff8f00; }  /* Mensaje de advertencia (naranja) */
+    .msg-error   { color: #d32f2f; }  /* Mensaje de error (rojo) */
+    .msg-info    { color: #1976d2; }  /* Mensaje informativo (azul) */
+
     .social-login {
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
+
     .social-btn {
       text-align: center;
       padding: 10px;
@@ -81,18 +98,25 @@
       color: white;
       text-decoration: none;
     }
+
     .social-btn.google {
       background-color: #db4437;
     }
+
     .social-btn.facebook {
       background-color: #3b5998;
     }
   </style>
 
+  {# Script para bloquear el menú contextual e inspección del navegador #}
   <script>
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('keydown', e => {
-      if (e.key === "F12" || (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J")) || (e.ctrlKey && e.key === "U")) {
+      if (
+        e.key === "F12" || 
+        (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J")) || 
+        (e.ctrlKey && e.key === "U")
+      ) {
         e.preventDefault();
       }
     });

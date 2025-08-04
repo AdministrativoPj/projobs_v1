@@ -1,10 +1,11 @@
-{% extends 'baseperfil.html' %}
+{% extends 'baseperfil.html' %}  {# Hereda la plantilla base del perfil #}
 
 {% block extra_css %}
 <style>
+  /* Contenedor general de la sección de contratos */
   .contratos-container {
     max-width: 1000px;
-    margin: 100px auto 0 auto;
+    margin: 100px auto;
     padding: 2rem;
     font-family: 'Poppins', sans-serif;
     display: flex;
@@ -12,6 +13,7 @@
     gap: 1.5rem;
   }
 
+  /* Tarjeta individual para cada contrato */
   .contrato-card {
     background: #ffffff;
     padding: 1.5rem;
@@ -24,11 +26,13 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
+  /* Efecto hover para la tarjeta */
   .contrato-card:hover {
     transform: scale(1.01);
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
   }
 
+  /* Encabezado de la tarjeta: título y estado */
   .contrato-header {
     display: flex;
     justify-content: space-between;
@@ -36,50 +40,67 @@
     flex-wrap: wrap;
   }
 
+  /* Título del contrato */
   .contrato-titulo {
     font-size: 1.3rem;
     font-weight: 600;
     color: #02786e;
   }
 
+  /* Etiqueta de estado */
   .estado {
     padding: 6px 10px;
     border-radius: 6px;
     font-weight: bold;
     font-size: 0.9rem;
-    background-color: #2ecc71;
-    color: white;
+    background-color: #f1c40f;
+    color: #fff;
     text-transform: capitalize;
   }
 
+  /* Información detallada del contrato */
   .contrato-datos p {
     margin: 4px 0;
     font-size: 0.95rem;
     color: #444;
   }
 
+  /* Pie de la tarjeta con botones de acción */
   .contrato-footer {
     display: flex;
-    justify-content: flex-end;
+    gap: 1rem;
     flex-wrap: wrap;
   }
 
-  .btn-finalizar {
+  /* Estilos comunes para botones de acción */
+  .btn-finalizar,
+  .btn-perfil,
+  .btn-chat {
     background-color: #02786e;
     color: #fff;
-    padding: 0.6rem 1.2rem;
+    padding: 0.5rem 1rem;
     border: none;
     border-radius: 8px;
     font-weight: 500;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
   }
 
+  /* Hover del botón de finalizar */
   .btn-finalizar:hover {
+    background-color: #d63031;
+  }
+
+  /* Hover de los demás botones */
+  .btn-perfil:hover,
+  .btn-chat:hover {
     background-color: #025e57;
   }
 
+  /* Mensaje mostrado si no hay contratos activos */
   .mensaje-vacio {
     padding: 1rem;
     background-color: #e0f7f1;
@@ -90,6 +111,7 @@
     text-align: center;
   }
 
+  /* Responsivo para pantallas pequeñas */
   @media (max-width: 768px) {
     .contrato-header {
       flex-direction: column;
@@ -98,26 +120,8 @@
     }
 
     .contrato-footer {
-      justify-content: flex-start;
-    }
-
-    .btn-finalizar {
-      width: 100%;
-      text-align: center;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .contrato-titulo {
-      font-size: 1.1rem;
-    }
-
-    .estado {
-      font-size: 0.8rem;
-    }
-
-    .contrato-datos p {
-      font-size: 0.85rem;
+      flex-direction: column;
+      align-items: stretch;
     }
   }
 </style>
@@ -128,26 +132,34 @@
   <h2 class="contrato-titulo">📄 Contratos activos</h2>
 
   {% if contratos %}
+    {# Itera sobre cada contrato activo #}
     {% for c in contratos %}
       <div class="contrato-card">
         <div class="contrato-header">
           <div class="contrato-titulo">{{ c.oferta.titulo }}</div>
-          <div class="estado">{{ c.estado }}</div>
+          <div class="estado">Activo</div>
         </div>
         <div class="contrato-datos">
           <p><strong>Trabajador:</strong> {{ c.trabajador.nombre }} {{ c.trabajador.apellido }}</p>
+          <p><strong>Correo:</strong> {{ c.trabajador.correo }}</p>
+          <p><strong>Modalidad:</strong> {{ c.oferta.get_modo_trabajo_display }}</p>
+          <p><strong>Categoría:</strong> {{ c.oferta.categoria }}</p>
           <p><strong>Fecha de postulación:</strong> {{ c.fecha_postulacion|date:"Y-m-d H:i" }}</p>
+          <p><strong>Fecha límite de la oferta:</strong> {{ c.oferta.fecha_limite|date:"Y-m-d" }}</p>
         </div>
         <div class="contrato-footer">
-          <form method="post" action="{% url 'finalizar_postulacion' c.id %}">
+          <a href="{% url 'perfil_trabajador_detalle' c.trabajador.id %}" class="btn-perfil">👤 Ver perfil</a>
+          <a href="{% url 'chat_con_usuario' c.trabajador.id %}" class="btn-chat">💬 Chatear</a>
+          <form method="post" action="{% url 'finalizar_postulacion' c.id %}" onsubmit="return confirm('¿Deseas finalizar este contrato? Esta acción es irreversible.')">
             {% csrf_token %}
-            <button type="submit" class="btn-finalizar"><i class="fas fa-flag-checkered"></i> Finalizar</button>
+            <button type="submit" class="btn-finalizar">🛑 Finalizar</button>
           </form>
         </div>
       </div>
     {% endfor %}
   {% else %}
-    <div class="mensaje-vacio">No hay postulaciones aceptadas activas.</div>
+    {# Si no hay contratos, muestra este mensaje #}
+    <div class="mensaje-vacio">No tienes contratos activos actualmente.</div>
   {% endif %}
 </div>
 {% endblock %}

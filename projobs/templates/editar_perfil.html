@@ -1,7 +1,8 @@
-{% extends 'baseperfil.html' %}
-{% load static %}
+{% extends 'baseperfil.html' %}  {# Hereda la plantilla base del panel #}
+{% load static %}  {# Carga el tag static para usar archivos estáticos #}
 
 {% block extra_css %}
+  {# Enlace al CSS específico de esta vista #}
   <link rel="stylesheet" href="{% static 'css/style_editar_perfil.css' %}">
 {% endblock %}
 
@@ -9,51 +10,61 @@
 <section class="profile-edit-wrapper">
   <div class="profile-card">
 
+    {# Sección de la imagen de perfil actual del usuario #}
     <div class="avatar-section">
       <label for="foto" class="avatar-label">
         {% if usuario.foto and usuario.foto.url %}
+          {# Muestra la imagen actual del usuario si existe, con cache busting por id #}
           <img src="{{ usuario.foto.url }}?v={{ usuario.id }}" id="preview-img" alt="Foto actual">
         {% else %}
+          {# Imagen por defecto si no tiene foto cargada #}
           <img src="{% static 'img/avatar-placeholder.png' %}" id="preview-img" alt="Foto default">
         {% endif %}
       </label>
     </div>
 
+    {# Muestra mensaje de éxito si existe #}
     {% if mensaje %}
       <div class="live-message success-message">
         {{ mensaje }}
       </div>
     {% endif %}
 
+    {# Formulario de edición de perfil #}
     <form method="POST" enctype="multipart/form-data" class="profile-form">
       {% csrf_token %}
 
-      <!-- ✅ Input visible para cargar nueva imagen -->
+      {# Input de carga de imagen de perfil #}
       <div class="form-field">
         <label for="foto">Cambiar foto de perfil</label>
         <input type="file" name="foto" id="foto" accept="image/*" style="display: block; margin-top: 8px;">
       </div>
 
+      {# Campo de nombre (obligatorio) #}
       <div class="form-field">
         <label>Nombre</label>
         <input type="text" name="nombre" value="{{ usuario.nombre }}" required>
       </div>
 
+      {# Campo de apellido (obligatorio) #}
       <div class="form-field">
         <label>Apellido</label>
         <input type="text" name="apellido" value="{{ usuario.apellido }}" required>
       </div>
 
+      {# Campo de correo (obligatorio) #}
       <div class="form-field">
         <label>Correo</label>
         <input type="email" name="correo" value="{{ usuario.correo }}" required>
       </div>
 
+      {# Campo de contraseña (opcional) #}
       <div class="form-field">
         <label>Contraseña (opcional)</label>
         <input type="password" name="password" placeholder="••••••••">
       </div>
 
+      {# Selector de rol (Cliente o Trabajador) #}
       <div class="form-field">
         <label>Rol</label>
         <select name="rol" required>
@@ -62,11 +73,13 @@
         </select>
       </div>
 
+      {# Botón para guardar cambios #}
       <button type="submit" class="save-button">Guardar cambios</button>
     </form>
   </div>
 </section>
 
+{# Script para vista previa inmediata de imagen seleccionada #}
 <script>
   const inputFoto = document.getElementById('foto');
   const preview = document.getElementById('preview-img');
@@ -78,7 +91,9 @@
     }
   });
 </script>
- <script>
+
+{# Script para bloquear inspección y clic derecho #}
+<script>
   document.addEventListener('contextmenu', e => e.preventDefault());
   document.addEventListener('keydown', e => {
     if (e.key === "F12" || (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J")) || (e.ctrlKey && e.key === "U")) {

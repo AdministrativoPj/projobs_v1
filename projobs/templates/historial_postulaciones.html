@@ -1,31 +1,44 @@
-{% extends 'baseperfil.html' %}
-{% load static %}
+{% extends 'baseperfil.html' %}  {# Extiende la plantilla base del perfil del usuario #}
+{% load static %}  {# Carga el tag static para utilizar archivos estáticos como CSS o imágenes #}
 
+{# Bloque para cargar CSS adicional específico de esta vista #}
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/style_historial_postulaciones.css' %}">
 {% endblock %}
 
+{# Bloque principal de contenido #}
 {% block content %}
-<div class="ofertas-container">
+<div class="ofertas-container historial-postulaciones">
   <h2 class="oferta-titulo-principal">Historial de Postulaciones</h2>
 
+  {# Itera sobre todas las postulaciones que llegan desde la vista #}
   {% for p in postulaciones %}
     <div class="oferta-card">
       <div class="oferta-header">
         <div class="oferta-titulo">{{ p.oferta.titulo }}</div>
-        <div class="oferta-ubicacion"><i class="fas fa-calendar"></i> {{ p.fecha_postulacion|date:"Y-m-d H:i" }}</div>
+        <div class="oferta-ubicacion">
+          <i class="fas fa-calendar"></i> {{ p.fecha_postulacion|date:"Y-m-d H:i" }}
+        </div>
       </div>
+
       <div class="oferta-desc">
+        {# SI el usuario autenticado es un CLIENTE (rol 2) #}
         {% if usuario.rol == 2 %}
           <p><strong>Trabajador:</strong>
             <a href="{% url 'perfil_trabajador_detalle' p.trabajador.id %}" class="enlace-perfil">
               {{ p.trabajador.nombre }} {{ p.trabajador.apellido }}
             </a>
           </p>
+
+          {# Botón para iniciar chat con el trabajador #}
           <a href="{% url 'chat_con_usuario' p.trabajador.id %}" class="postular-btn">Chatear</a>
+
+          {# Formulario para actualizar el estado de la postulación #}
           <form method="post" class="historial-form">
             {% csrf_token %}
             <input type="hidden" name="postulacion_id" value="{{ p.id }}">
+
+            {# Si ya está finalizada y fue aceptada, se bloquean los controles #}
             {% if p.finalizada and p.estado == 'aceptado' %}
               <p><span class="estado estado-finalizado">✅ Finalizado</span></p>
               <select name="estado" disabled>
@@ -33,6 +46,7 @@
               </select>
               <button type="submit" class="postular-btn" disabled>Actualizar</button>
             {% else %}
+              {# Selección de estado editable si aún no está finalizada #}
               <select name="estado">
                 <option value="pendiente" {% if p.estado == "pendiente" %}selected{% endif %}>Pendiente</option>
                 <option value="aceptado" {% if p.estado == "aceptado" %}selected{% endif %}>Aceptado</option>
@@ -41,9 +55,15 @@
               <button type="submit" class="postular-btn-ac">Actualizar</button>
             {% endif %}
           </form>
+
+        {# SI el usuario es un TRABAJADOR (rol 3) #}
         {% elif usuario.rol == 3 %}
           <p><strong>Cliente:</strong> {{ p.oferta.cliente.nombre }} {{ p.oferta.cliente.apellido }}</p>
+
+          {# Botón para iniciar chat con el cliente #}
           <a href="{% url 'chat_con_usuario' p.oferta.cliente.id %}" class="postular-btn">Chatear</a>
+
+          {# Mostrar estado de la postulación #}
           <p><strong>Estado:</strong>
             {% if p.finalizada %}
               <span class="estado estado-finalizado">Finalizado</span>
@@ -51,6 +71,8 @@
               <span class="estado estado-{{ p.estado }}">{{ p.estado|capfirst }}</span>
             {% endif %}
           </p>
+
+          {# Botón para eliminar la postulación (solo si no está finalizada) #}
           <form method="post" class="historial-form" onsubmit="return confirm('¿Seguro que deseas eliminar esta postulación?');">
             {% csrf_token %}
             <input type="hidden" name="postulacion_id" value="{{ p.id }}">
@@ -59,6 +81,8 @@
         {% endif %}
       </div>
     </div>
+
+  {# Si no hay postulaciones en la lista #}
   {% empty %}
     <p>No hay postulaciones.</p>
   {% endfor %}

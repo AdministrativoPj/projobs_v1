@@ -2,58 +2,68 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Registro - ProJobs</title>
+  <meta charset="UTF-8"> <!-- Codificación de caracteres -->
+  <title>Registro - ProJobs</title> <!-- Título de la pestaña -->
+  <!-- Enlace al CSS principal de estilo -->
   <link rel="stylesheet" href="{% static 'css/styleini.css' %}">
+  <!-- Fuente Poppins desde Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
+<!-- Contenedor principal de la autenticación -->
 <div class="auth-wrapper">
   <div class="auth-card">
 
+    <!-- Sección izquierda con el logo -->
     <div class="auth-image">
       <a href="{% url 'index' %}">
         <img src="{% static 'img/logotipo.png' %}" alt="ProJobs Logo">
       </a>
     </div>
 
+    <!-- Sección derecha con el formulario -->
     <div class="auth-form">
       <h2>Crear cuenta</h2>
 
+      <!-- Formulario de registro -->
       <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
+        <!-- Bloque de mensajes tipo alert -->
         {% if messages %}
           <ul class="messages">
             {% for message in messages %}
-              <li class="
-                {% if 'success' in message.tags %}msg-success
-                {% elif 'warning' in message.tags %}msg-warning
-                {% elif 'error' in message.tags %}msg-error
-                {% else %}msg-info{% endif %}
-              ">{{ message }}</li>
+              <li class="{% if 'success' in message.tags %}msg-success{% elif 'warning' in message.tags %}msg-warning{% elif 'error' in message.tags %}msg-error{% else %}msg-info{% endif %}">
+                {{ message }}
+              </li>
             {% endfor %}
           </ul>
         {% endif %}
 
+        <!-- Campos del formulario -->
         <input type="text" name="nombre" placeholder="Nombre" value="{{ nombre|default_if_none:'' }}" required>
         <input type="text" name="apellido" placeholder="Apellido" value="{{ apellido|default_if_none:'' }}" required>
         <input type="email" name="correo" placeholder="Correo electrónico" value="{{ correo|default_if_none:'' }}" required>
         <input type="password" name="password" placeholder="Contraseña" required>
 
-        <select name="rol" class="select-rol" required>
-          <option value="" disabled {% if not rol %}selected{% endif %}>Selecciona tu rol</option>
-          <option value="2" {% if rol == "2" %}selected{% endif %}>Cliente</option>
-          <option value="3" {% if rol == "3" %}selected{% endif %}>Trabajador</option>
-        </select>
+        <!-- Switch animado para elegir rol -->
+        <div class="switch-container">
+          <input type="hidden" name="rol" id="rolHidden" value="{{ rol|default:'2' }}">
+          <div class="switch-toggle">
+            <span id="clienteLabel" class="switch-option {% if rol == '2' or not rol %}active{% endif %}">Cliente</span>
+            <span id="trabajadorLabel" class="switch-option {% if rol == '3' %}active{% endif %}">Trabajador</span>
+            <div class="switch-slider" id="switchSlider"></div>
+          </div>
+        </div>
 
+        <!-- Zona de carga de imagen (drag and drop) -->
         <div class="dropzone" id="dropzone">
           <p>Arrastra tu foto aquí o haz clic para seleccionar</p>
           <input type="file" name="foto" id="foto" accept="image/*" hidden>
         </div>
 
-        <!-- Checkbox de términos y condiciones -->
+        <!-- Términos y condiciones -->
         <div style="margin-top: 1rem; font-size: 0.9rem;">
           <input type="checkbox" id="acepto_terminos" required>
           <label for="acepto_terminos">
@@ -61,6 +71,7 @@
           </label>
         </div>
 
+        <!-- Botón de envío -->
         <button type="submit">Registrarme</button>
       </form>
     </div>
@@ -68,7 +79,7 @@
   </div>
 </div>
 
-<!-- Modal -->
+<!-- Modal para mostrar términos -->
 <div id="modalTerminos" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6);">
   <div style="background: #fff; max-width: 600px; margin: 10vh auto; padding: 2rem; border-radius: 8px; position: relative;">
     <h3>Términos y condiciones de tratamiento de datos</h3>
@@ -82,14 +93,59 @@
   </div>
 </div>
 
+<!-- Estilos para los mensajes y el switch de rol -->
 <style>
-  .msg-success { color: #2e7d32; }  /* verde */
-  .msg-warning { color: #ff8f00; }  /* naranja */
-  .msg-error   { color: #d32f2f; }  /* rojo */
-  .msg-info    { color: #1976d2; }  /* azul */
+  .msg-success { color: #2e7d32; }
+  .msg-warning { color: #ff8f00; }
+  .msg-error   { color: #d32f2f; }
+  .msg-info    { color: #1976d2; }
+
+  .switch-container {
+    margin: 10px 0;
+    position: relative;
+    width: 100%;
+  }
+
+  .switch-toggle {
+    display: flex;
+    position: relative;
+    background: #e0e0e0;
+    border-radius: 50px;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    user-select: none;
+  }
+
+  .switch-option {
+    flex: 1;
+    padding: 12px 0;
+    text-align: center;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    z-index: 2;
+  }
+
+  .switch-option.active {
+    color: #fff;
+  }
+
+  .switch-slider {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 50%;
+    background: #028674;
+    border-radius: 50px;
+    transition: transform 0.3s ease;
+    z-index: 1;
+  }
 </style>
 
+<!-- Scripts de funcionalidad -->
 <script>
+  // Manejo drag-and-drop de la foto
   const dropzone = document.getElementById('dropzone');
   const fileInput = document.getElementById('foto');
 
@@ -107,15 +163,17 @@
     fileInput.files = e.dataTransfer.files;
   });
 
+  // Mostrar modal de términos
   function mostrarModal() {
     document.getElementById('modalTerminos').style.display = 'block';
   }
 
+  // Cerrar modal de términos
   function cerrarModal() {
     document.getElementById('modalTerminos').style.display = 'none';
   }
 
-  // Validación extra (opcional)
+  // Validación de checkbox antes de enviar
   document.querySelector("form").addEventListener("submit", function(e) {
     const checkbox = document.getElementById("acepto_terminos");
     if (!checkbox.checked) {
@@ -124,11 +182,39 @@
     }
   });
 
+  // Bloquear inspección por teclado/context menu
   document.addEventListener('contextmenu', e => e.preventDefault());
   document.addEventListener('keydown', e => {
     if (e.key === "F12" || (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J")) || (e.ctrlKey && e.key === "U")) {
       e.preventDefault();
     }
+  });
+
+  // Lógica del switch para seleccionar rol
+  const clienteLabel = document.getElementById("clienteLabel");
+  const trabajadorLabel = document.getElementById("trabajadorLabel");
+  const switchSlider = document.getElementById("switchSlider");
+  const rolHidden = document.getElementById("rolHidden");
+
+  function updateSwitch(role) {
+    rolHidden.value = role;
+    if (role == "2") {
+      switchSlider.style.transform = "translateX(0%)";
+      clienteLabel.classList.add("active");
+      trabajadorLabel.classList.remove("active");
+    } else {
+      switchSlider.style.transform = "translateX(100%)";
+      trabajadorLabel.classList.add("active");
+      clienteLabel.classList.remove("active");
+    }
+  }
+
+  clienteLabel.addEventListener("click", () => updateSwitch("2"));
+  trabajadorLabel.addEventListener("click", () => updateSwitch("3"));
+
+  // Inicializa el switch con el valor actual
+  document.addEventListener("DOMContentLoaded", () => {
+    updateSwitch(rolHidden.value || "2");
   });
 </script>
 

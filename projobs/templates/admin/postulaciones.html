@@ -1,12 +1,17 @@
+{# Extiende de la plantilla base para perfiles, reutilizando estructura común de la interfaz #}
 {% extends 'baseperfil.html' %}
 {% load static %}
 
+{# Título de la pestaña del navegador #}
 {% block title %}Admin Postulaciones{% endblock %}
 
+{# Contenido principal de la vista #}
 {% block content %}
 <div class="container mx-auto mt-8">
+    {# Título principal de la página #}
     <h2 class="text-3xl font-bold mb-6 text-center">Administrar Postulaciones</h2>
 
+    {# Tabla que contiene el listado de todas las postulaciones registradas #}
     <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
         <thead class="bg-gray-200">
             <tr>
@@ -19,25 +24,46 @@
             </tr>
         </thead>
         <tbody>
+            {# Iteración sobre la lista de postulaciones enviadas al template #}
             {% for p in postulaciones %}
             <tr class="border-b">
+                {# ID de la postulación #}
                 <td class="py-3 px-6">{{ p.id }}</td>
+
+                {# Título de la oferta a la cual se postuló #}
                 <td class="py-3 px-6">{{ p.oferta.titulo }}</td>
+
+                {# Nombre completo del trabajador postulante #}
                 <td class="py-3 px-6">{{ p.trabajador.nombre }} {{ p.trabajador.apellido }}</td>
+
+                {# Estado actual de la postulación (pendiente, aceptado, rechazado) #}
                 <td class="py-3 px-6">{{ p.estado }}</td>
+
+                {# Fecha en la que se registró la postulación #}
                 <td class="py-3 px-6">{{ p.fecha_postulacion|date:"Y-m-d H:i" }}</td>
+
+                {# Formulario de acciones sobre la postulación: cambiar estado o eliminar #}
                 <td class="py-3 px-6 flex gap-2">
                     <form method="post" style="display:inline;">
                         {% csrf_token %}
                         <input type="hidden" name="postulacion_id" value="{{ p.id }}">
+                        
+                        {# Botón para aceptar la postulación #}
                         <button name="accion" value="aceptado" class="px-2 py-1 bg-green-500 text-white rounded">Aceptar</button>
+                        
+                        {# Botón para rechazar la postulación #}
                         <button name="accion" value="rechazado" class="px-2 py-1 bg-red-500 text-white rounded">Rechazar</button>
+                        
+                        {# Botón para marcar la postulación como pendiente #}
                         <button name="accion" value="pendiente" class="px-2 py-1 bg-yellow-400 text-black rounded">Pendiente</button>
+                        
+                        {# Botón para eliminar la postulación #}
                         <button name="accion" value="eliminar" class="px-2 py-1 bg-gray-600 text-white rounded">Eliminar</button>
                     </form>
                 </td>
             </tr>
             {% empty %}
+            {# Mensaje mostrado si no hay postulaciones registradas #}
             <tr>
                 <td colspan="6" class="py-4 px-6 text-center">No hay postulaciones registradas.</td>
             </tr>

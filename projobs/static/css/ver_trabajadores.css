@@ -1,10 +1,14 @@
+/* ======================================================
+   CONTENEDOR GENERAL DE LA SECCIÓN DE TRABAJADORES
+====================================================== */
 .trabajadores-container {
   padding: 2rem 1rem;
   font-family: 'Poppins', sans-serif;
   max-width: 900px;
-  margin: 0 auto;
+  margin: 0 auto; /* Centra horizontalmente */
 }
 
+/* Título principal de la sección */
 .titulo-seccion {
   font-size: 1.8rem;
   font-weight: 600;
@@ -13,6 +17,9 @@
   text-align: center;
 }
 
+/* ======================================================
+   BARRA DE BÚSQUEDA DE TRABAJADORES
+====================================================== */
 #buscador {
   width: 100%;
   padding: 12px 16px;
@@ -22,15 +29,19 @@
   background-color: #f0fdf4;
   margin-bottom: 1.5rem;
   transition: all 0.2s ease-in-out;
-  box-sizing: border-box;
+  box-sizing: border-box; /* Incluye padding y border en el ancho total */
 }
 
+/* Estilo cuando el input está enfocado */
 #buscador:focus {
   border-color: #10b981;
   outline: none;
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
 }
 
+/* ======================================================
+   TARJETA DE INFORMACIÓN DEL TRABAJADOR
+====================================================== */
 .card-trabajador {
   display: flex;
   justify-content: space-between;
@@ -43,13 +54,17 @@
   margin-bottom: 1.5rem;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* Permite que los elementos se acomoden en dispositivos pequeños */
 }
 
+/* Efecto al pasar el mouse sobre la tarjeta */
 .card-trabajador:hover {
   transform: translateY(-3px);
 }
 
+/* ======================================================
+   INFORMACIÓN DEL TRABAJADOR DENTRO DE LA TARJETA
+====================================================== */
 .info-trabajador {
   flex: 1;
   font-size: 1rem;
@@ -64,6 +79,9 @@
   display: block;
 }
 
+/* ======================================================
+   BOTÓN PARA VER DETALLE DEL TRABAJADOR
+====================================================== */
 .btn-ver {
   background-color: #02786e;
   color: white;
@@ -76,11 +94,14 @@
   white-space: nowrap;
 }
 
+/* Efecto hover del botón */
 .btn-ver:hover {
   background-color: #035c52;
 }
 
-/* Responsive mejorado */
+/* ======================================================
+   RESPONSIVE: PANTALLAS PEQUEÑAS
+====================================================== */
 @media (max-width: 768px) {
   .card-trabajador {
     flex-direction: column;

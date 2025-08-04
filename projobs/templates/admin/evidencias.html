@@ -1,15 +1,21 @@
+{# Hereda la plantilla base del perfil de usuario, para mantener el layout general de la app #}
 {% extends 'baseperfil.html' %}
 
+{# Define el título que aparecerá en la pestaña del navegador #}
 {% block title %}Evidencias - Admin{% endblock %}
 
+{# Bloque principal del contenido #}
 {% block content %}
 <div class="container mx-auto mt-10">
+    {# Encabezado principal del módulo de evidencias #}
     <h2 class="text-3xl font-bold mb-8 text-center">Evidencias Subidas</h2>
 
+    {# Tabla con scroll horizontal en pantallas pequeñas #}
     <div class="overflow-x-auto">
         <table class="min-w-full bg-white rounded shadow">
             <thead class="bg-gray-100">
                 <tr>
+                    {# Encabezados de la tabla con nombres de columnas #}
                     <th class="py-3 px-6 text-left">Trabajador</th>
                     <th class="py-3 px-6 text-left">Oferta</th>
                     <th class="py-3 px-6 text-left">Descripción</th>
@@ -18,11 +24,19 @@
                 </tr>
             </thead>
             <tbody>
+                {# Itera sobre cada evidencia registrada #}
                 {% for e in evidencias %}
                 <tr class="border-b">
+                    {# Muestra el nombre completo del trabajador que subió la evidencia #}
                     <td class="py-3 px-6">{{ e.trabajador.nombre }} {{ e.trabajador.apellido }}</td>
+
+                    {# Título de la oferta relacionada a la evidencia #}
                     <td class="py-3 px-6">{{ e.postulacion.oferta.titulo }}</td>
+
+                    {# Descripción escrita por el trabajador al subir la evidencia #}
                     <td class="py-3 px-6">{{ e.descripcion }}</td>
+
+                    {# Enlace para visualizar el archivo subido (si existe) #}
                     <td class="py-3 px-6">
                         {% if e.archivo %}
                             <a href="{{ e.archivo.url }}" target="_blank" class="text-blue-600 hover:underline">Ver archivo</a>
@@ -30,6 +44,8 @@
                             Sin archivo
                         {% endif %}
                     </td>
+
+                    {# Acción para eliminar la evidencia mediante formulario con confirmación #}
                     <td class="py-3 px-6">
                         <form action="{% url 'admin_eliminar_evidencia' e.id %}" method="post" onsubmit="return confirm('¿Eliminar esta evidencia?')">
                             {% csrf_token %}
@@ -39,6 +55,7 @@
                         </form>
                     </td>
                 </tr>
+                {# Si no hay evidencias, muestra un mensaje en la tabla #}
                 {% empty %}
                 <tr>
                     <td colspan="5" class="py-6 text-center">No hay evidencias registradas.</td>

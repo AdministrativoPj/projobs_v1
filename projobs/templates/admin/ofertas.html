@@ -1,14 +1,21 @@
+{# Extiende de la plantilla base del panel de perfil, heredando estructura común #}
 {% extends 'baseperfil.html' %}
 {% load static %}
 
+{# Define el título que se mostrará en la pestaña del navegador #}
 {% block title %}Gestionar Ofertas - Admin{% endblock %}
 
+{# Contenido principal del bloque #}
 {% block content %}
 <div class="container mx-auto mt-10">
+    {# Encabezado principal del panel de gestión de ofertas #}
     <h2 class="text-3xl font-bold mb-8 text-center">Gestionar Ofertas</h2>
+
+    {# Tabla que lista todas las ofertas registradas #}
     <table class="w-full table-auto border-collapse">
         <thead>
             <tr class="bg-gray-200">
+                {# Encabezados de columnas: ID, Título, Cliente, Categoría, Fecha y Acciones #}
                 <th class="p-2 border">ID</th>
                 <th class="p-2 border">Título</th>
                 <th class="p-2 border">Cliente</th>
@@ -18,13 +25,17 @@
             </tr>
         </thead>
         <tbody>
+            {# Iteración sobre la lista de ofertas #}
             {% for oferta in ofertas %}
             <tr class="hover:bg-gray-100">
+                {# Datos de cada oferta: ID, título, cliente (nombre y apellido), categoría y fecha #}
                 <td class="p-2 border">{{ oferta.id }}</td>
                 <td class="p-2 border">{{ oferta.titulo }}</td>
                 <td class="p-2 border">{{ oferta.cliente.nombre }} {{ oferta.cliente.apellido }}</td>
                 <td class="p-2 border">{{ oferta.categoria }}</td>
                 <td class="p-2 border">{{ oferta.fecha_publicacion|date:"Y-m-d" }}</td>
+
+                {# Botón de acción para eliminar la oferta #}
                 <td class="p-2 border">
                     <form method="post" style="display:inline;">
                         {% csrf_token %}
@@ -36,6 +47,7 @@
                 </td>
             </tr>
             {% empty %}
+            {# Mensaje mostrado si no hay ofertas registradas #}
             <tr>
                 <td colspan="6" class="p-4 text-center text-gray-500">No hay ofertas registradas.</td>
             </tr>

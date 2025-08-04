@@ -1,10 +1,16 @@
 {% extends 'baseperfil.html' %}
+{# Hereda de la plantilla base de perfil para mantener el diseño coherente #}
+
 {% load static %}
+{# Carga el sistema de archivos estáticos de Django para usar CSS/JS #}
 
 {% block content %}
+{# Inicio del bloque de contenido principal de la página #}
+
 <h2 class="titulo-seccion">🟢 Publicar oferta para contratar un profesional independiente</h2>
 <p class="descripcion-seccion">Completa este formulario para ofrecer un trabajo a trabajadores independientes.</p>
 
+{# Sección de mensajes flash (éxito, error, etc.) #}
 {% if messages %}
   <ul class="messages">
     {% for message in messages %}
@@ -13,18 +19,31 @@
   </ul>
 {% endif %}
 
+{# Formulario para publicar una nueva oferta laboral #}
 <form method="POST" class="form-crear-oferta">
-  {% csrf_token %}
+  {% csrf_token %} {# Protección contra ataques CSRF #}
 
+  {# Campo para el título de la oferta #}
   <label for="titulo">Título:</label>
-  <input type="text" name="titulo" required placeholder="Ej: Necesito técnico de lavadoras">
+  <input type="text" name="titulo" required maxlength="100"
+         placeholder="Ej: Necesito técnico de lavadoras"
+         pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,()\- ]{5,100}$"
+         title="Solo texto alfanumérico y puntuación básica.">
 
+  {# Campo para descripción detallada del trabajo #}
   <label for="descripcion">Descripción del trabajo:</label>
-  <textarea name="descripcion" rows="4" required placeholder="Describe lo que necesitas que se realice..."></textarea>
+  <textarea name="descripcion" rows="4" required maxlength="1000"
+            placeholder="Describe lo que necesitas que se realice..."
+            pattern="^[^<>]{10,1000}$"
+            title="Evita usar caracteres HTML como < o >."></textarea>
 
+  {# Campo para la ubicación física del trabajo #}
   <label for="ubicacion">Ubicación:</label>
-  <input type="text" name="ubicacion" required placeholder="Ej: Medellín, Laureles">
+  <input type="text" name="ubicacion" required maxlength="100"
+         placeholder="Ej: Medellín, Laureles"
+         pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,()\- ]{3,100}$">
 
+  {# Selector del tipo de modalidad de trabajo #}
   <label for="modo_trabajo">Modo de trabajo:</label>
   <select name="modo_trabajo" required>
     <option value="presencial">Presencial</option>
@@ -32,134 +51,85 @@
     <option value="hibrido">Híbrido</option>
   </select>
 
-  <label for="rango_pago">Rango de pago:</label>
-  <input type="text" name="rango_pago" required placeholder="Ej: $100.000 - $150.000">
+  {# Rango deslizante para indicar el valor estimado de la oferta #}
+  <label for="rango_pago">Valor estimado de la oferta ($COP):</label>
+  <input type="range" id="rango_pago" name="rango_pago" min="10000" max="100000000" step="10000" value="10000000"
+         oninput="outputPago.value = '$' + parseInt(this.value).toLocaleString('es-CO')">
+  <output id="outputPago" style="font-weight: bold;">$100.000</output>
 
+  {# Fecha límite para recibir postulaciones (mínimo la fecha actual) #}
   <label for="fecha_limite">Fecha límite para aplicar:</label>
-  <input type="date" name="fecha_limite" required>
+  <input type="date" name="fecha_limite" required id="fecha_limite">
 
+  {# Selector del tipo de servicio (categoría del profesional) #}
   <label for="categoria">Tipo de servicio requerido:</label>
   <select name="categoria" required>
-    <option value="Electricista">Electricista</option>
+    <option value="">Selecciona una opción</option>
+    {# Opciones de categorías predeterminadas #}
+    <option value="Administrador">Administrador</option>
+    <option value="Abogado">Abogado</option>
+    <option value="Agente Call Center">Agente Call Center</option>
+    <option value="Analista de Sistemas">Analista de Sistemas</option>
+    <option value="Arquitecto">Arquitecto</option>
+    <option value="Auxiliar Contable">Auxiliar Contable</option>
+    <option value="Barbero">Barbero</option>
+    <option value="Biólogo">Biólogo</option>
+    <option value="Carpintero">Carpintero</option>
+    <option value="Chef">Chef</option>
+    <option value="Conductor">Conductor</option>
+    <option value="Contador Público">Contador Público</option>
     <option value="Diseñador Gráfico">Diseñador Gráfico</option>
-    <option value="Programador">Programador</option>
-    <option value="Plomero">Plomero</option>
+    <option value="Electricista">Electricista</option>
+    <option value="Enfermero">Enfermero</option>
+    <option value="Estilista">Estilista</option>
+    <option value="Ingeniero Civil">Ingeniero Civil</option>
+    <option value="Ingeniero de Sistemas">Ingeniero de Sistemas</option>
     <option value="Jardinero">Jardinero</option>
+    <option value="Mecánico">Mecánico</option>
+    <option value="Mensajero">Mensajero</option>
+    <option value="Panadero">Panadero</option>
+    <option value="Paseador de Perros">Paseador de Perros</option>
+    <option value="Pintor">Pintor</option>
+    <option value="Plomero">Plomero</option>
+    <option value="Programador">Programador</option>
+    <option value="Psicólogo">Psicólogo</option>
+    <option value="Publicista">Publicista</option>
+    <option value="Soldador">Soldador</option>
+    <option value="Técnico de Lavadoras">Técnico de Lavadoras</option>
+    <option value="Técnico Electricista">Técnico Electricista</option>
+    <option value="Técnico en Refrigeración">Técnico en Refrigeración</option>
+    <option value="Veterinario">Veterinario</option>
+    <option value="Vigilante">Vigilante</option>
     <option value="Otro">Otro</option>
   </select>
 
+  {# Campo opcional para detallar profesión personalizada si se elige "Otro" #}
   <label for="descripcion_profesion">Describe la profesión si seleccionaste "Otro":</label>
-  <input type="text" name="descripcion_profesion" placeholder="Ej: Paseador de perros">
+  <input type="text" name="descripcion_profesion" placeholder="Ej: Paseador de perros"
+         pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,()\- ]{0,100}$">
 
+  {# Número de trabajadores máximos que se desea contratar #}
   <label for="max_postulaciones">Máximo de trabajadores a contratar:</label>
-  <input type="number" name="max_postulaciones" value="5" min="1" required>
+  <input type="number" name="max_postulaciones" value="5" min="1" max="100" required>
 
+  {# Botón para enviar el formulario y publicar la oferta #}
   <button type="submit">✅ Publicar Oferta</button>
 </form>
 
-<style>
-  .form-crear-oferta {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    max-width: 700px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    font-family: 'Poppins', sans-serif;
-  }
+{# Script para establecer el comportamiento del slider y la validación de fecha #}
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // Slider de pago
+    const slider = document.getElementById("rango_pago");
+    const output = document.getElementById("outputPago");
+    output.value = '$' + parseInt(slider.value).toLocaleString('es-CO');
 
-  .form-crear-oferta label {
-    font-weight: 600;
-    color: #065f46;
-    margin-bottom: 4px;
-  }
-
-  .form-crear-oferta input,
-  .form-crear-oferta select,
-  .form-crear-oferta textarea {
-    padding: 10px 14px;
-    border: 1px solid #a7f3d0;
-    border-radius: 8px;
-    background-color: #f0fdf4;
-    font-size: 15px;
-    color: #1f2937;
-  }
-
-  .form-crear-oferta input:focus,
-  .form-crear-oferta select:focus,
-  .form-crear-oferta textarea:focus {
-    border-color: #10b981;
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
-  }
-
-  .form-crear-oferta button {
-    background-color: #065f46;
-    color: white;
-    font-weight: 600;
-    padding: 12px;
-    font-size: 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-
-  .form-crear-oferta button:hover {
-    background-color: #047857;
-  }
-
-  .titulo-seccion {
-    font-size: 28px;
-    font-weight: bold;
-    color: #065f46;
-    border-left: 6px solid #10b981;
-    padding-left: 12px;
-    background: linear-gradient(to right, #ecfdf5, #ffffff);
-    border-radius: 6px;
-    margin: 2rem auto 0.5rem;
-    max-width: 700px;
-  }
-
-  .descripcion-seccion {
-    font-size: 16px;
-    color: #334155;
-    margin-bottom: 1.5rem;
-    text-align: left;
-    max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .messages {
-    margin: 0 auto 1.5rem;
-    max-width: 700px;
-    padding: 12px;
-    background-color: #d1fae5;
-    color: #065f46;
-    border-left: 6px solid #10b981;
-    border-radius: 6px;
-    list-style: none;
-    font-weight: 500;
-  }
-
-  .messages li {
-    padding: 4px 0;
-  }
-
-  @media (max-width: 768px) {
-    .form-crear-oferta {
-      padding: 1.5rem;
-      gap: 12px;
-    }
-
-    .titulo-seccion,
-    .descripcion-seccion {
-      padding: 0 1rem;
-    }
-  }
-</style>
+    // Fecha mínima permitida es hoy
+    const hoy = new Date();
+    const yyyy = hoy.getFullYear();
+    const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+    const dd = String(hoy.getDate()).padStart(2, '0');
+    document.getElementById("fecha_limite").min = `${yyyy}-${mm}-${dd}`;
+  });
+</script>
 {% endblock %}

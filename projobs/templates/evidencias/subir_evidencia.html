@@ -1,7 +1,11 @@
 {% extends 'baseperfil.html' %}
+{# Hereda la plantilla base del perfil del sistema #}
+
 {% load static %}
+{# Carga los archivos estáticos para poder utilizar rutas de CSS, JS, imágenes, etc. #}
 
 {% block extra_css %}
+  {# Sección para incluir CSS específico para esta vista #}
   <link rel="stylesheet" href="{% static 'css/subir_evidencia.css' %}">
 {% endblock %}
 
@@ -10,6 +14,7 @@
   <h2>Subir Evidencia</h2>
 
   {% if messages %}
+    {# Muestra mensajes flash (éxito, error, etc.) si existen #}
     <div class="contenedor-mensajes">
       {% for message in messages %}
         <div class="alert alert-{{ message.tags }}">
@@ -19,9 +24,11 @@
     </div>
   {% endif %}
 
+  {# Formulario para subir una nueva evidencia de una postulación #}
   <form method="post" enctype="multipart/form-data" class="form-subir-evidencia">
-    {% csrf_token %}
+    {% csrf_token %}  {# Token de seguridad CSRF #}
 
+    {# Selector para elegir la postulación a la cual asociar la evidencia #}
     <label for="postulacion_id">Selecciona la postulación:</label>
     <select name="postulacion_id" id="postulacion_id" required>
       <option value="" disabled selected>-- Selecciona una opción --</option>
@@ -30,12 +37,15 @@
       {% endfor %}
     </select>
 
+    {# Campo para subir archivo (admite imágenes, PDF, Word, WebP) #}
     <label for="archivo">Archivo de evidencia:</label>
     <input type="file" name="archivo" id="archivo" accept=".jpg,.jpeg,.png,.pdf,.docx,.webp" required>
 
+    {# Campo opcional para agregar una descripción textual de la evidencia #}
     <label for="descripcion">Descripción (opcional):</label>
     <textarea name="descripcion" id="descripcion" rows="4" placeholder="Describe la evidencia..."></textarea>
 
+    {# Botón para enviar el formulario #}
     <button type="submit" class="btn-evidencia-submit">Subir Evidencia</button>
   </form>
 </div>

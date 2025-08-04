@@ -4,50 +4,62 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Título del documento con bloque dinámico -->
   <title>{% block title %}Panel ProJobs{% endblock %}</title>
 
+  <!-- Enlaces a hojas de estilos estáticas -->
   <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
   <link rel="stylesheet" href="{% static 'css/style_crear_oferta.css' %}" />
   <link rel="stylesheet" href="{% static 'css/style_editar_perfil.css' %}" />
   <link rel="stylesheet" href="{% static 'css/perfil_trabajador.css' %}" />
   <link rel="stylesheet" href="{% static 'css/subir_evidencia.css' %}" />
   <link rel="stylesheet" href="{% static 'css/style_postular_oferta.css' %}" />
+  <!-- Font Awesome para íconos -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
+  <!-- Carga hoja de estilos adicional solo si el usuario es admin -->
   {% if usuario.rol == 1 %}
     <link rel="stylesheet" href="{% static 'css/admin.css' %}">
   {% endif %}
 
+  <!-- Espacio para insertar más CSS desde otras plantillas -->
   {% block extra_css %}{% endblock %}
 </head>
 
 <body class="{% if usuario.rol == 1 %}admin-panel{% endif %}">
 
+  <!-- Barra superior (topbar) -->
   <header class="topbar">
     <div class="logo">
       <img src="{% static 'img/logotipo.png' %}" alt="Logo" class="logo-img" />
       <span>ProJobs</span>
     </div>
+
     <div class="logout-container">
+      <!-- Ícono de notificaciones -->
       <div class="notificacion-wrapper" onclick="toggleNotificaciones()" style="position: relative;">
         <i class="fa-solid fa-bell fa-lg"></i>
+        <!-- Muestra la cantidad de mensajes no leídos -->
         {% if cantidad_mensajes_no_leidos > 0 %}
           <span id="notiCount" class="notificacion-badge">{{ cantidad_mensajes_no_leidos }}</span>
         {% endif %}
       </div>
+      <!-- Panel desplegable de notificaciones -->
       <div id="panelNotificaciones" class="panel-notificaciones"></div>
+      <!-- Botón para cerrar sesión -->
       <a href="{% url 'cerrar_sesion' %}" class="logout-btn">Cerrar sesión</a>
     </div>
   </header>
 
-  <!-- Menú hamburguesa en móviles -->
+  <!-- Botón menú hamburguesa en móvil -->
   <div class="hamburger" onclick="toggleSidebar()">
     <i class="fa-solid fa-bars"></i>
   </div>
 
-  <!-- Sidebar -->
+  <!-- Barra lateral de navegación (sidebar) -->
   <nav class="sidebar" id="sidebar">
     {% if usuario.rol == 1 %}
+      <!-- Menú para Administrador -->
       <a href="{% url 'admin_usuarios' %}" class="nav-item"><i class="fa-solid fa-users-cog"></i> Administrar usuarios</a>
       <a href="{% url 'admin_dashboard_graficos' %}" class="nav-item"><i class="fa-solid fa-chart-pie"></i> Dashboard gráficos</a>
       <a href="{% url 'admin_postulaciones' %}" class="nav-item"><i class="fa-solid fa-tasks"></i> Administrar postulaciones</a>
@@ -56,39 +68,48 @@
       <a href="{% url 'admin_evidencias' %}" class="nav-item"><i class="fa-solid fa-folder-open"></i> Administrar evidencias</a>
       <a href="{% url 'admin_chats' %}" class="nav-item"><i class="fa-solid fa-comments"></i> Ver chats</a>
     {% else %}
+      <!-- Menú para Clientes y Trabajadores -->
       <a href="{% url 'perfilusuario' %}" class="nav-item"><i class="fa-solid fa-user"></i> Mi perfil</a>
-      <a href="{% url 'crear_oferta' %}" class="nav-item"><i class="fa-solid fa-briefcase"></i> Crear ofertas</a>
+
+      {% if usuario.rol == 2 %}
+        <a href="{% url 'crear_oferta' %}" class="nav-item"><i class="fa-solid fa-briefcase"></i> Crear ofertas</a>
+      {% endif %}
+
       <a href="{% url 'historial_postulaciones' %}" class="nav-item"><i class="fa-solid fa-clock"></i> Historial</a>
+
       {% if usuario.rol == 2 %}
         <a href="{% url 'contratos_usuario' %}" class="nav-item"><i class="fa-solid fa-file-signature"></i> Contratos</a>
         <a href="{% url 'ver_trabajadores' %}" class="nav-item"><i class="fa-solid fa-users"></i> Trabajadores</a>
       {% endif %}
+
       {% if usuario.rol == 3 %}
         <a href="{% url 'lista_ofertas' %}" class="nav-item"><i class="fa-solid fa-clipboard-check"></i> Postularme</a>
         <a href="{% url 'subir_evidencia' %}" class="nav-item"><i class="fa-solid fa-upload"></i> Subir Evidencia</a>
+        <a href="{% url 'contratos_trabajador' %}" class="nav-item"><i class="fa-solid fa-file-signature"></i> Mis contratos</a>
       {% endif %}
     {% endif %}
   </nav>
 
+  <!-- Contenido principal -->
   <main class="main-content">
     {% block content %}{% endblock %}
   </main>
 
+  <!-- Scripts -->
   <script>
+    // Toggle del sidebar en móviles
     function toggleSidebar() {
       const sidebar = document.getElementById("sidebar");
       const hamburger = document.querySelector(".hamburger");
-
       sidebar.classList.toggle("active");
       hamburger.style.display = sidebar.classList.contains("active") ? "none" : "flex";
     }
 
-    // Cerrar sidebar al hacer clic en un ítem (solo en móviles)
+    // Cierra sidebar en móviles al hacer clic en un ítem
     document.querySelectorAll(".nav-item").forEach(item => {
       item.addEventListener("click", () => {
         const sidebar = document.getElementById("sidebar");
         const hamburger = document.querySelector(".hamburger");
-
         if (window.innerWidth <= 768) {
           sidebar.classList.remove("active");
           hamburger.style.display = "flex";
@@ -96,6 +117,7 @@
       });
     });
 
+    // Mostrar y cargar notificaciones
     async function toggleNotificaciones() {
       const panel = document.getElementById("panelNotificaciones");
       const badge = document.getElementById("notiCount");
@@ -109,6 +131,7 @@
         const response = await fetch("{% url 'obtener_notificaciones' %}");
         const data = await response.json();
 
+        // Renderiza las notificaciones o un mensaje si no hay
         panel.innerHTML = data.notificaciones.length > 0
           ? data.notificaciones.map(n => `
               <div class="noti-item">
@@ -122,6 +145,7 @@
 
         panel.style.display = "block";
 
+        // Marca las notificaciones como leídas en backend
         await fetch("{% url 'marcar_notificaciones_leidas' %}", {
           method: "POST",
           headers: {"X-CSRFToken": getCookie("csrftoken")}
@@ -136,6 +160,7 @@
       }
     }
 
+    // Obtiene el token CSRF de las cookies
     function getCookie(name) {
       let cookieValue = null;
       if (document.cookie && document.cookie !== '') {

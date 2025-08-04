@@ -1,3 +1,6 @@
+/* ============================ */
+/* CONTENEDOR GENERAL DEL PERFIL */
+/* ============================ */
 .perfil-trabajador-box {
   max-width: 800px;
   margin: 2rem auto;
@@ -13,6 +16,9 @@
   margin-bottom: 2rem;
 }
 
+/* ============================ */
+/* INFO DEL TRABAJADOR */
+/* ============================ */
 .perfil-trabajador-info {
   display: flex;
   align-items: flex-start;
@@ -39,6 +45,9 @@
   color: #444;
 }
 
+/* ============================ */
+/* BOTÓN DE VOLVER */
+/* ============================ */
 .btn-volver {
   display: inline-block;
   margin-top: 1rem;
@@ -55,6 +64,9 @@
   background-color: #035c52;
 }
 
+/* ============================ */
+/* FORMULARIO DE CALIFICACIÓN */
+/* ============================ */
 .form-calificacion {
   display: flex;
   flex-direction: column;
@@ -88,6 +100,10 @@
 .form-calificacion button:hover {
   background-color: #035c52;
 }
+
+/* ============================ */
+/* COMENTARIOS DE CLIENTES */
+/* ============================ */
 .comentarios-previos {
   margin-top: 2rem;
   background: #f9fafa;
@@ -102,6 +118,10 @@
   margin-bottom: 1rem;
   border-radius: 6px;
 }
+
+/* ============================ */
+/* ESTRELLAS DE CALIFICACIÓN */
+/* ============================ */
 .estrellas {
   direction: rtl;
   unicode-bidi: bidi-override;
@@ -109,31 +129,7 @@
   justify-content: start;
   gap: 4px;
   margin-bottom: 1rem;
-}
-
-.estrellas input[type="radio"] {
-  display: none;
-}
-
-.estrellas label {
   font-size: 2rem;
-  color: #ccc;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-
-.estrellas input[type="radio"]:checked ~ label,
-.estrellas label:hover,
-.estrellas label:hover ~ label {
-  color: gold;
-}
-.estrellas {
-  direction: rtl;
-  unicode-bidi: bidi-override;
-  display: flex;
-  gap: 5px;
-  font-size: 2rem;
-  margin-bottom: 1rem;
 }
 
 .estrellas input[type="radio"] {
@@ -155,10 +151,12 @@
   color: gold;
 }
 
+/* Promedio de estrellas */
 .estrellas-promedio {
   font-size: 1.5rem;
 }
 
+/* Clases auxiliares para estrellas llenas o vacías */
 .estrella.llena {
   color: gold;
 }
@@ -167,10 +165,9 @@
   color: #ccc;
 }
 
-.comentario-box {
-  margin-bottom: 1rem;
-}
-
+/* ============================ */
+/* BOTÓN DE VER MÁS COMENTARIOS */
+/* ============================ */
 #verMasBtn {
   background: none;
   border: none;
@@ -180,8 +177,9 @@
   font-size: 1rem;
 }
 
-
-
+/* ============================ */
+/* BOTÓN PARA ENVIAR MENSAJE */
+/* ============================ */
 .btn-mensaje {
   display: inline-block;
   margin: 0.5rem 0 1rem;

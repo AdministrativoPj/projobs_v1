@@ -1,27 +1,42 @@
+{# Extiende la plantilla base de usuario que incluye el layout general (topbar, sidebar, etc.) #}
 {% extends 'baseperfil.html' %}
 
+{# Título de la pestaña del navegador #}
 {% block title %}Chats - Admin{% endblock %}
 
+{# Contenido principal de la página #}
 {% block content %}
 <div class="container mx-auto mt-10">
+
+    {# Título principal de la sección centrado #}
     <h2 class="text-3xl font-bold mb-8 text-center">Chats Registrados</h2>
+
+    {# Contenedor en forma de grid que se adapta a una o dos columnas dependiendo del tamaño de pantalla #}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        {# Recorre la lista de objetos 'chat' y muestra los nombres de los dos usuarios involucrados #}
         {% for chat in chats %}
         <div class="p-4 bg-white rounded shadow hover:shadow-lg transition">
+            
+            {# Muestra los nombres de usuario1 y usuario2 junto con el ícono de conversación #}
             <p class="text-lg font-semibold mb-2">
                 {{ chat.usuario1.nombre }} {{ chat.usuario1.apellido }} 
                 <i class="fas fa-comments mx-2"></i> 
                 {{ chat.usuario2.nombre }} {{ chat.usuario2.apellido }}
             </p>
+
+            {# Botón para redirigir al detalle de la conversación entre esos dos usuarios #}
             <a href="{% url 'admin_ver_chat' chat.usuario1.id chat.usuario2.id %}" 
                class="inline-block mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
                 Ver conversación
             </a>
         </div>
+
+        {# Si no existen chats, se muestra este mensaje por defecto #}
         {% empty %}
         <p>No hay chats registrados.</p>
         {% endfor %}
+
     </div>
 </div>
 {% endblock %}
-

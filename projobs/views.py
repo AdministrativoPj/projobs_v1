@@ -15,6 +15,7 @@ from django.urls import reverse
 from datetime import date
 from django.views.decorators.http import require_GET
 from .models import Usuario, OfertaLaboralIndependiente, MensajeContacto, Postulacion, Mensaje, Calificacion, Evidencia
+from django.utils.html import escape
 
 
 
@@ -274,40 +275,47 @@ def editar_perfil(request):
 # Ofertas y postulaciones
 # -------------------------
 
-
-
 def crear_oferta(request):
     usuario = get_object_or_404(Usuario, id=request.session.get('usuario_id'))
 
     if request.method == 'POST':
-        titulo = request.POST.get('titulo', '').strip()
-        descripcion = request.POST.get('descripcion', '').strip()
-        ubicacion = request.POST.get('ubicacion', '').strip()
-        modo_trabajo = request.POST.get('modo_trabajo', '').strip()
-        rango_pago = request.POST.get('rango_pago', '').strip()
-        fecha_limite = request.POST.get('fecha_limite', '').strip()
-        categoria = request.POST.get('categoria', '').strip()
-        descripcion_profesion = request.POST.get('descripcion_profesion', '').strip()
-        max_postulaciones = request.POST.get('max_postulaciones', '5').strip()
+        # --- Escape básico de entradas (eliminar espacios, tags y codificar caracteres peligrosos)
+        def sanitize(value, pattern=None, default=''):
+            val = escape(value.strip())
+            if pattern and not re.match(pattern, val):
+                return None
+            return val
+
+        # Campos recibidos
+        titulo = sanitize(request.POST.get('titulo', ''), r'^[\w\sáéíóúÁÉÍÓÚñÑ.,()\-]{5,100}$')
+        descripcion = sanitize(request.POST.get('descripcion', ''), r'^[^<>]{10,1000}$')
+        ubicacion = sanitize(request.POST.get('ubicacion', ''), r'^[\w\sáéíóúÁÉÍÓÚñÑ.,()\-]{3,100}$')
+        modo_trabajo = sanitize(request.POST.get('modo_trabajo', ''), r'^(presencial|remoto|hibrido)$')
+        rango_pago = sanitize(request.POST.get('rango_pago', ''), r'^\d{4,7}$')  # solo valores numéricos
+        categoria = sanitize(request.POST.get('categoria', ''), r'^[\w\sáéíóúÁÉÍÓÚñÑ]{3,50}$')
+        descripcion_profesion = sanitize(request.POST.get('descripcion_profesion', ''), r'^[\w\sáéíóúÁÉÍÓÚñÑ.,()\-]{0,100}$')
+        max_postulaciones_raw = request.POST.get('max_postulaciones', '5').strip()
+        fecha_limite_raw = request.POST.get('fecha_limite', '').strip()
 
         errores = []
 
-        # Validar fecha
-        if fecha_limite:
-            try:
-                fecha_limite_parsed = date.fromisoformat(fecha_limite)
-                if fecha_limite_parsed < date.today():
-                    errores.append("❌ La fecha límite no puede ser anterior a hoy.")
-            except ValueError:
-                errores.append("❌ Formato de fecha no válido.")
-        else:
-            errores.append("❌ Debes seleccionar una fecha límite.")
+        # Validación específica de fecha
+        try:
+            fecha_limite = date.fromisoformat(fecha_limite_raw)
+            if fecha_limite < date.today():
+                errores.append("❌ La fecha límite no puede ser anterior a hoy.")
+        except ValueError:
+            errores.append("❌ Formato de fecha no válido.")
+
+        # Validar campos obligatorios
+        if not all([titulo, descripcion, ubicacion, modo_trabajo, rango_pago, categoria]):
+            errores.append("❌ Todos los campos obligatorios deben tener un formato válido.")
 
         # Validar máximo de postulaciones
         try:
-            max_postulaciones = int(max_postulaciones)
-            if max_postulaciones <= 0:
-                errores.append("❌ El número máximo de postulaciones debe ser mayor a cero.")
+            max_postulaciones = int(max_postulaciones_raw)
+            if max_postulaciones <= 0 or max_postulaciones > 100:
+                errores.append("❌ El número máximo debe estar entre 1 y 100.")
         except ValueError:
             errores.append("❌ El campo de máximo de postulaciones debe ser un número válido.")
 
@@ -321,8 +329,8 @@ def crear_oferta(request):
                 descripcion=descripcion,
                 ubicacion=ubicacion,
                 modo_trabajo=modo_trabajo,
-                rango_pago=rango_pago,
-                fecha_limite=fecha_limite_parsed,
+                rango_pago=f"${int(rango_pago):,}".replace(',', '.'),
+                fecha_limite=fecha_limite,
                 categoria=categoria,
                 descripcion_profesion=descripcion_profesion,
                 max_postulaciones=max_postulaciones,
@@ -379,33 +387,6 @@ def lista_ofertas(request):
         'categoria_seleccionada': categoria
     })
 
-
-    usuario = get_object_or_404(Usuario, id=request.session.get('usuario_id'))
-    if usuario.rol == 2:
-        postulaciones = Postulacion.objects.filter(oferta__cliente=usuario)
-    elif usuario.rol == 3:
-        postulaciones = Postulacion.objects.filter(trabajador=usuario)
-    else:
-        postulaciones = []
-
-    if request.method == 'POST':
-        post_id = request.POST.get('postulacion_id')
-        if usuario.rol == 2:
-            postulacion = get_object_or_404(Postulacion, id=post_id, oferta__cliente=usuario)
-            postulacion.estado = request.POST.get('estado')
-            postulacion.revisada = True
-            postulacion.save()
-            messages.success(request, "✅ Estado actualizado correctamente.")
-        elif usuario.rol == 3:
-            try:
-                postulacion = Postulacion.objects.get(id=post_id, trabajador=usuario)
-                postulacion.delete()
-                messages.success(request, "🗑️ Postulación eliminada correctamente.")
-            except Postulacion.DoesNotExist:
-                messages.error(request, "❌ No se pudo eliminar la postulación.")
-        return redirect('historial_postulaciones')
-
-    return render(request, 'historial_postulaciones.html', {'usuario': usuario, 'postulaciones': postulaciones})
 @require_http_methods(["GET", "POST"])
 def historial_postulaciones(request):
     usuario = get_object_or_404(Usuario, id=request.session.get('usuario_id'))
@@ -431,6 +412,46 @@ def historial_postulaciones(request):
                     postulacion.estado = nuevo_estado
                     postulacion.revisada = True
                     postulacion.save()
+
+                    if nuevo_estado == 'aceptado':
+                        # ⚠️ IMPORTANTE: Guarda referencias limpias para evitar errores de contexto
+                        oferta = postulacion.oferta
+                        trabajador_aceptado = postulacion.trabajador
+
+                        # ✅ Mensaje al trabajador aceptado
+                        Mensaje.objects.create(
+                            emisor=usuario,
+                            receptor=trabajador_aceptado,
+                            contenido=(
+                                f"🎉 Hola {trabajador_aceptado.nombre}, tu postulación a la oferta "
+                                f"**{oferta.titulo}** ha sido aceptada. "
+                                "El proceso de contratación ha comenzado. Te contactaremos pronto."
+                            )
+                        )
+
+                        # ❌ Rechazar y notificar a los demás postulados
+                        otras_postulaciones = Postulacion.objects.filter(
+                            oferta=oferta,
+                            estado='pendiente',
+                            finalizada=False
+                        ).exclude(id=postulacion.id)
+
+                        for otra in otras_postulaciones:
+                            otra.estado = 'rechazado'
+                            otra.revisada = True
+                            otra.save()
+
+                            Mensaje.objects.create(
+                                emisor=usuario,
+                                receptor=otra.trabajador,
+                                contenido=(
+                                    f"Hola {otra.trabajador.nombre}, gracias por postularte a la oferta "
+                                    f"**{oferta.titulo}**. "
+                                    "Lamentablemente, ya ha sido contratada otra persona para este trabajo. "
+                                    "¡Agradecemos tu interés!"
+                                )
+                            )
+
                     messages.success(request, "✅ Estado actualizado correctamente.")
                 else:
                     messages.error(request, "❌ Estado inválido.")
@@ -449,7 +470,6 @@ def historial_postulaciones(request):
         'usuario': usuario,
         'postulaciones': postulaciones
     })
-
 
 # -------------------------
 # Chat, calificaciones y admin
@@ -960,11 +980,12 @@ def finalizar_postulacion(request, id):
     postulacion.save()
 
     # Crear mensaje para el trabajador
-    contenido = f"""
-Hola {{nombre}}, el cliente **{usuario.nombre} {usuario.apellido}** ha finalizado el contrato de la oferta **{postulacion.oferta.titulo}**.
+    contenido = (
+        f"Hola {postulacion.trabajador.nombre}, el cliente **{usuario.nombre} {usuario.apellido}** "
+        f"ha finalizado el contrato de la oferta **{postulacion.oferta.titulo}**.\n\n"
+        "Por favor, revisa si los acuerdos fueron cumplidos."
+    )
 
-Por favor, revisa si los acuerdos fueron cumplidos.
-"""
     Mensaje.objects.create(
         emisor=usuario,
         receptor=postulacion.trabajador,
@@ -973,6 +994,7 @@ Por favor, revisa si los acuerdos fueron cumplidos.
 
     messages.success(request, "✅ Contrato finalizado y trabajador notificado.")
     return redirect('contratos_usuario')
+
 
 
 @require_GET
@@ -994,4 +1016,23 @@ def ver_trabajadores(request):
         "usuario": usuario,
         "trabajadores": trabajadores,
         "q": query
+    })
+
+@require_GET
+def contratos_trabajador(request):
+    trabajador = get_object_or_404(Usuario, id=request.session.get('usuario_id'))
+
+    if trabajador.rol != 3:
+        messages.error(request, "Acceso no autorizado.")
+        return redirect('perfilusuario')
+
+    contratos = Postulacion.objects.filter(
+        trabajador=trabajador,
+        estado='aceptado',
+        finalizada=False
+    ).select_related('oferta', 'oferta__cliente')
+
+    return render(request, 'contratos/contratos_trabajador.html', {
+        'usuario': trabajador,
+        'contratos': contratos
     })

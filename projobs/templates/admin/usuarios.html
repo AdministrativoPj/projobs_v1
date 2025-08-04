@@ -1,14 +1,18 @@
+{# Hereda de la plantilla base de perfil para mantener consistencia de diseño #}
 {% extends 'baseperfil.html' %}
 {% load static %}
 
+{# Bloque principal de contenido que se renderiza dentro de baseperfil.html #}
 {% block content %}
 <div class="admin-container">
   <h2>Gestión de Usuarios</h2>
 
+  {# Muestra los mensajes del sistema, como confirmaciones o errores #}
   {% for message in messages %}
     <div class="msg">{{ message }}</div>
   {% endfor %}
 
+  {# Tabla que lista los usuarios registrados en el sistema #}
   <table class="admin-table">
     <thead>
       <tr>
@@ -20,18 +24,22 @@
       </tr>
     </thead>
     <tbody>
+      {# Iteración sobre cada usuario pasado desde la vista #}
       {% for u in usuarios %}
         <tr>
-          <td>{{ u.id }}</td>
-          <td>{{ u.nombre }} {{ u.apellido }}</td>
-          <td>{{ u.correo }}</td>
-          <td>{{ u.get_rol_display }}</td>
+          <td>{{ u.id }}</td> {# ID único del usuario #}
+          <td>{{ u.nombre }} {{ u.apellido }}</td> {# Nombre completo del usuario #}
+          <td>{{ u.correo }}</td> {# Correo electrónico del usuario #}
+          <td>{{ u.get_rol_display }}</td> {# Muestra el rol con su nombre legible #}
           <td>
+            {# Formulario para eliminar el usuario #}
             <form method="post" style="display:inline;">
               {% csrf_token %}
               <input type="hidden" name="user_id" value="{{ u.id }}">
               <button type="submit" name="accion" value="eliminar" onclick="return confirm('¿Eliminar usuario?')">🗑️</button>
             </form>
+
+            {# Formulario para cambiar el rol del usuario, con selección automática #}
             <form method="post" style="display:inline;">
               {% csrf_token %}
               <input type="hidden" name="user_id" value="{{ u.id }}">
@@ -52,9 +60,22 @@
 </div>
 {% endblock %}
 
+{# Estilos específicos para esta vista, aplicados en línea por conveniencia #}
 <style>
-.admin-container { max-width: 1000px; margin: 0 auto; }
-.admin-table { width: 100%; border-collapse: collapse; }
-.admin-table th, .admin-table td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-.admin-table th { background: #f0f0f0; }
+.admin-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.admin-table th, .admin-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+.admin-table th {
+  background: #f0f0f0;
+}
 </style>

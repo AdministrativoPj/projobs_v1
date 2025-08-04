@@ -1,10 +1,11 @@
-{% extends 'baseperfil.html' %}
-{% load static %}
+{% extends 'baseperfil.html' %} {# Extiende de la plantilla base general del perfil #}
+{% load static %} {# Carga de archivos estáticos (CSS, imágenes, etc.) #}
 
-{% block title %}Mi perfil{% endblock %}
+{% block title %}Mi perfil{% endblock %} {# Título de la pestaña del navegador #}
 
 {% block content %}
 
+{# Sección de mensajes (éxito, error, etc.) que aparecen en pantalla #}
 {% if messages %}
   <div class="contenedor-mensajes">
     {% for message in messages %}
@@ -15,9 +16,11 @@
   </div>
 {% endif %}
 
+{# Contenedor principal del perfil del usuario #}
 <div class="perfil-dashboard">
   <div class="perfil-header">
     <div class="perfil-foto-nombre">
+      {# Foto del usuario, si no tiene se usa la imagen por defecto #}
       {% if usuario.foto %}
         <img src="{{ usuario.foto.url }}" alt="Foto de perfil" class="foto-perfil-grande">
       {% else %}
@@ -25,12 +28,14 @@
       {% endif %}
       <div>
         <h2>{{ usuario.nombre }} {{ usuario.apellido }}</h2>
-        <p class="rol">{{ usuario.get_rol_display }}</p>
+        <p class="rol">{{ usuario.get_rol_display }}</p> {# Rol legible: Cliente, Trabajador, Admin... #}
       </div>
     </div>
+    {# Botón para editar el perfil #}
     <a href="{% url 'editar_perfil' %}" class="btn-editar"><i class="fas fa-edit"></i> Editar perfil</a>
   </div>
 
+  {# Información de contacto y rol #}
   <div class="perfil-detalles">
     <div class="card-info">
       <h4>Correo electrónico</h4>
@@ -43,6 +48,7 @@
   </div>
 </div>
 
+{# Previene inspección del DOM y clic derecho #}
 <script>
   document.addEventListener('contextmenu', e => e.preventDefault());
   document.addEventListener('keydown', e => {
@@ -54,6 +60,7 @@
 
 {% endblock %}
 
+{# Estilos embebidos para mensajes emergentes en la parte superior #}
 <style>
 .contenedor-mensajes {
   position: fixed;
@@ -75,7 +82,7 @@
   font-weight: bold;
   opacity: 0.95;
   box-shadow: 0 12px 30px rgba(0,0,0,0.4);
-  animation: popFade 6s forwards;
+  animation: popFade 6s forwards; /* Se oculta después de animar */
 }
 
 .alert-success::before {

@@ -1,10 +1,13 @@
+{# Extiende la plantilla base de perfil para mantener consistencia visual en el layout #}
 {% extends 'baseperfil.html' %}
 {% load static %}
 
 {% block content %}
 <div style="padding: 1rem; max-width: 100%; box-sizing: border-box;">
+  {# Título del chat, muestra con quién se está conversando #}
   <h2 style="margin-bottom: 1rem;">Chat con {{ receptor.nombre }} {{ receptor.apellido }}</h2>
 
+  {# Contenedor del historial de mensajes #}
   <div id="chat-container" style="
     max-height: 400px;
     overflow-y: auto;
@@ -15,7 +18,8 @@
     background-color: #f9f9f9;
     width: 100%;
     box-sizing: border-box;">
-    
+
+    {# Iteración de los mensajes. Se alinea a la derecha si es del usuario actual, a la izquierda si es del receptor #}
     {% for msg in mensajes %}
       <div style="display: flex; justify-content: {% if msg.emisor.id == usuario.id %}flex-end{% else %}flex-start{% endif %}; margin-bottom: 0.5rem;">
         <div style="
@@ -25,9 +29,12 @@
           background-color: {% if msg.emisor.id == usuario.id %}#02786e{% else %}#e0e0e0{% endif %};
           color: {% if msg.emisor.id == usuario.id %}white{% else %}black{% endif %};
           font-size: 0.9rem;
-          word-wrap: break-word;
-        ">
+          word-wrap: break-word;">
+          
+          {# Contenido del mensaje #}
           {{ msg.contenido }}
+
+          {# Fecha y hora del mensaje con estilo acorde al emisor #}
           <div style="font-size: 0.7rem; color: {% if msg.emisor.id == usuario.id %}rgba(255,255,255,0.6){% else %}#777{% endif %}; margin-top: 0.25rem;">
             {{ msg.fecha_envio|date:"Y-m-d H:i" }}
           </div>
@@ -38,6 +45,7 @@
     {% endfor %}
   </div>
 
+  {# Formulario para enviar un nuevo mensaje #}
   <form method="post" style="display: flex; flex-direction: column; gap: 0.5rem;">
     {% csrf_token %}
     <textarea name="contenido" rows="2" required placeholder="Escribe tu mensaje..." style="flex: 1; padding: 0.5rem; border-radius: 8px; border: 1px solid #ccc; resize: none;"></textarea>
@@ -45,6 +53,7 @@
   </form>
 </div>
 
+{# Script JS para mantener el scroll abajo y refrescar automáticamente los mensajes cada 4 segundos #}
 <script>
   const chatContainer = document.getElementById('chat-container');
 
@@ -52,7 +61,7 @@
     chatContainer.scrollTop = chatContainer.scrollHeight;
   }
 
-  scrollToBottom(); // al cargar
+  scrollToBottom(); // Al cargar la página
 
   setInterval(() => {
     fetch(window.location.href)
@@ -63,7 +72,7 @@
         const updated = doc.querySelector('#chat-container');
         if (updated) {
           chatContainer.innerHTML = updated.innerHTML;
-          scrollToBottom(); // mantener scroll abajo
+          scrollToBottom(); // Mantiene el scroll en el fondo tras actualizar
         }
       });
   }, 4000);

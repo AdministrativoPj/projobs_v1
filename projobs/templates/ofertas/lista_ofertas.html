@@ -1,46 +1,68 @@
 {% extends 'baseperfil.html' %}
+{# Hereda de la plantilla base del perfil para mantener la estructura del layout #}
+
 {% load static %}
+{# Carga archivos estáticos como CSS/JS desde la configuración de Django #}
 
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/style_postular_oferta.css' %}">
+  {# Enlace al archivo CSS específico para estilos de postulación a ofertas #}
 {% endblock %}
 
 {% block content %}
 <div class="ofertas-container">
   <h2>Ofertas laborales disponibles</h2>
 
-  <!-- 🔥 Filtro por categoría -->
+  <!-- 🔥 Filtro por categoría de servicios -->
   <form method="get" class="filtro-form">
     <label for="categoria">Filtrar por categoría:</label>
     <select name="categoria" id="categoria" onchange="this.form.submit()">
       <option value="">Todas</option>
-      <option value="Electricista" {% if categoria_seleccionada == "Electricista" %}selected{% endif %}>Electricista</option>
-      <option value="Diseñador Gráfico" {% if categoria_seleccionada == "Diseñador Gráfico" %}selected{% endif %}>Diseñador Gráfico</option>
-      <option value="Programador" {% if categoria_seleccionada == "Programador" %}selected{% endif %}>Programador</option>
-      <option value="Plomero" {% if categoria_seleccionada == "Plomero" %}selected{% endif %}>Plomero</option>
-      <option value="Jardinero" {% if categoria_seleccionada == "Jardinero" %}selected{% endif %}>Jardinero</option>
+      {# Lista de opciones. Si el usuario ha seleccionado una categoría, esa opción se marca como seleccionada #}
+      <option value="Administrador" {% if categoria_seleccionada == "Administrador" %}selected{% endif %}>Administrador</option>
+      ...
+      <option value="Vigilante" {% if categoria_seleccionada == "Vigilante" %}selected{% endif %}>Vigilante</option>
       <option value="Otro" {% if categoria_seleccionada == "Otro" %}selected{% endif %}>Otro</option>
     </select>
   </form>
 
+  <!-- Mensajes del sistema (éxito, error, etc.) -->
   {% for message in messages %}
     <div class="msg">{{ message }}</div>
   {% endfor %}
 
+  <!-- Renderizado de las ofertas -->
   {% if ofertas %}
     <div class="contenedor-ofertas">
       {% for oferta in ofertas %}
         <div class="oferta-card {% if oferta.estado != 'abierta' %}cerrada{% endif %}">
+          {# Si la oferta está cerrada, se agrega una clase que la desactiva visualmente #}
+
           <div class="oferta-titulo">{{ oferta.titulo }}</div>
-          <div class="oferta-ubicacion"><i class="fas fa-map-marker-alt"></i> {{ oferta.ubicacion }}</div>
+
+          <div class="oferta-info">
+            <p><strong>Ubicación:</strong> {{ oferta.ubicacion }}</p>
+            <p><strong>Modo de trabajo:</strong> {{ oferta.get_modo_trabajo_display }}</p>
+            <p><strong>Rango de pago:</strong> {{ oferta.rango_pago }}</p>
+            <p><strong>Fecha límite:</strong> {{ oferta.fecha_limite }}</p>
+            <p><strong>Categoría:</strong> {{ oferta.categoria }}</p>
+
+            {% if oferta.categoria == "Otro" and oferta.descripcion_profesion %}
+              <p><strong>Específico:</strong> {{ oferta.descripcion_profesion }}</p>
+              {# Si la categoría es "Otro", se muestra la descripción detallada proporcionada #}
+            {% endif %}
+
+            <p><strong>Publicado:</strong> {{ oferta.fecha_publicacion|date:"d M Y" }}</p>
+          </div>
+
           <div class="oferta-desc">{{ oferta.descripcion }}</div>
 
-          <!-- ✅ Contador de postulaciones -->
           <div class="oferta-contador">
             {{ oferta.num_postulaciones }} postulados / {{ oferta.max_postulaciones }} máximo
           </div>
 
           {% if oferta.estado == 'abierta' %}
+            {# Solo se muestra el botón de postularse si la oferta está abierta #}
             <form method="post">
               {% csrf_token %}
               <input type="hidden" name="id_oferta" value="{{ oferta.id }}">

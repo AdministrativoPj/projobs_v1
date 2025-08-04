@@ -1,22 +1,33 @@
+{# Extiende la plantilla base del perfil, que incluye navbar, estilos generales, etc. #}
 {% extends 'baseperfil.html' %}
 
+{# Establece el título de la pestaña del navegador #}
 {% block title %}Chat Detalle{% endblock %}
 
+{# Bloque de contenido principal #}
 {% block content %}
 <div class="container mx-auto mt-10">
+    
+    {# Título centrado que muestra los nombres de los usuarios involucrados en la conversación #}
     <h2 class="text-3xl font-bold mb-6 text-center">
         Conversación entre {{ user1.nombre }} {{ user1.apellido }} 
         y {{ user2.nombre }} {{ user2.apellido }}
     </h2>
+
+    {# Contenedor blanco para los mensajes del chat, con estilos aplicados #}
     <div class="bg-white rounded shadow p-6 max-w-3xl mx-auto">
+
+        {# Itera sobre los mensajes y muestra cada uno con el nombre del emisor y el contenido #}
         {% for m in mensajes %}
             <div class="mb-4">
                 <strong>{{ m.emisor.nombre }}:</strong> {{ m.contenido }}
                 <div class="text-xs text-gray-500">{{ m.fecha_envio }}</div>
             </div>
         {% empty %}
+            {# Si no hay mensajes, muestra un mensaje informativo #}
             <p>No hay mensajes en este chat.</p>
         {% endfor %}
+
     </div>
 </div>
 {% endblock %}

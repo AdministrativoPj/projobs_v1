@@ -1,12 +1,17 @@
+{# Extiende la plantilla base del perfil (baseperfil.html) #}
 {% extends 'baseperfil.html' %}
 
+{# Título personalizado para la página de calificaciones (visible en la pestaña del navegador) #}
 {% block title %}Calificaciones - Admin{% endblock %}
 
+{# Contenido principal de la página #}
 {% block content %}
 <div class="container mx-auto mt-10">
+    {# Título de sección centrado #}
     <h2 class="text-3xl font-bold mb-8 text-center">Calificaciones registradas</h2>
 
     <div class="overflow-x-auto">
+        {# Tabla de calificaciones con estilos y scroll horizontal en pantallas pequeñas #}
         <table class="min-w-full bg-white rounded shadow">
             <thead class="bg-gray-100">
                 <tr>
@@ -19,6 +24,7 @@
                 </tr>
             </thead>
             <tbody>
+                {# Itera sobre la lista de calificaciones y muestra cada una en su fila #}
                 {% for c in calificaciones %}
                 <tr class="border-b">
                     <td class="py-3 px-6">{{ c.trabajador.nombre }} {{ c.trabajador.apellido }}</td>
@@ -27,6 +33,7 @@
                     <td class="py-3 px-6">{{ c.comentario }}</td>
                     <td class="py-3 px-6">{{ c.fecha|date:"Y-m-d H:i" }}</td>
                     <td class="py-3 px-6">
+                        {# Formulario para eliminar una calificación con confirmación de seguridad #}
                         <form action="{% url 'admin_eliminar_calificacion' c.id %}" method="post" onsubmit="return confirm('¿Seguro de eliminar esta calificación?')">
                             {% csrf_token %}
                             <button type="submit" class="text-red-600 hover:text-red-800 font-semibold">
@@ -36,6 +43,7 @@
                     </td>
                 </tr>
                 {% empty %}
+                {# Si no hay calificaciones, muestra este mensaje #}
                 <tr>
                     <td colspan="6" class="py-6 text-center">No hay calificaciones registradas.</td>
                 </tr>

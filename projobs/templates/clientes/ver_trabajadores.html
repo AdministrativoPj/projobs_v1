@@ -1,14 +1,15 @@
-{% extends 'baseperfil.html' %}
-{% load static %}
+{% extends 'baseperfil.html' %} {# Hereda de la plantilla base del perfil #}
+{% load static %} {# Carga de archivos estáticos de Django #}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/ver_trabajadores.css' %}">
+<link rel="stylesheet" href="{% static 'css/ver_trabajadores.css' %}"> {# Enlace al archivo de estilos CSS específico para esta vista #}
 {% endblock %}
 
 {% block content %}
 <div class="trabajadores-container">
   <h2 class="titulo-seccion"> Buscar trabajadores disponibles</h2>
 
+  {# Input para buscar trabajadores por nombre, conserva el valor si se hace una búsqueda previa #}
   <input
     type="text"
     id="buscador"
@@ -16,8 +17,10 @@
     value="{{ q }}"
   />
 
+  {# Contenedor que será actualizado dinámicamente al escribir en el buscador #}
   <div id="lista-trabajadores">
     {% if trabajadores %}
+      {# Itera sobre los trabajadores encontrados y muestra su tarjeta de información #}
       {% for t in trabajadores %}
         <div class="card-trabajador">
           <div class="info-trabajador">
@@ -34,15 +37,17 @@
 </div>
 
 <script>
+  // Captura el input de búsqueda y el contenedor de trabajadores
   const input = document.getElementById('buscador');
   const lista = document.getElementById('lista-trabajadores');
 
+  // Evento que se dispara cada vez que se escribe en el input
   input.addEventListener('input', async () => {
-    const q = input.value.trim();
-    const response = await fetch(`/trabajadores/?q=${encodeURIComponent(q)}`);
-    const html = await response.text();
+    const q = input.value.trim(); // Limpia espacios en blanco
+    const response = await fetch(`/trabajadores/?q=${encodeURIComponent(q)}`); // Llama a la vista con el nuevo valor
+    const html = await response.text(); // Obtiene el HTML de la respuesta
 
-    // Reemplaza solo la parte de los trabajadores
+    // Extrae el nuevo contenido de trabajadores y reemplaza el actual
     const temp = document.createElement('div');
     temp.innerHTML = html;
     const nuevos = temp.querySelector('#lista-trabajadores');

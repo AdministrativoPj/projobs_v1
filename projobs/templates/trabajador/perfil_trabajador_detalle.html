@@ -2,18 +2,24 @@
 {% load static %}
 
 {% block content %}
+<!-- Contenedor principal del perfil del trabajador -->
 <div class="perfil-trabajador-box">
   <h2>Perfil del Trabajador</h2>
 
+  <!-- Información general del trabajador -->
   <div class="perfil-trabajador-info">
     {% if trabajador.foto %}
+      <!-- Si tiene foto, se muestra -->
       <img src="{{ trabajador.foto.url }}" alt="Foto" class="foto-trabajador">
     {% else %}
+      <!-- Foto por defecto si no tiene -->
       <img src="{% static 'img/perfil_default.png' %}" alt="Foto por defecto" class="foto-trabajador">
     {% endif %}
     <div>
       <h3>{{ trabajador.nombre }} {{ trabajador.apellido }}</h3>
+      <!-- Botón para iniciar chat -->
       <a href="{% url 'chat_con_usuario' trabajador.id %}" class="btn-mensaje">💬 Enviar mensaje</a>
+      <!-- Calificación promedio visual en estrellas -->
       <p><strong>Calificación promedio:</strong> 
         <span class="estrellas-promedio">
           {% for i in "12345" %}
@@ -26,30 +32,36 @@
         </span>
         ({{ promedio }}/5)
       </p>
+      <!-- Enlace para regresar al historial -->
       <a href="{% url 'historial_postulaciones' %}" class="btn-volver">← Volver al historial</a>
     </div>
   </div>
 
   <hr>
 
+  <!-- Formulario para calificar al trabajador -->
   <form method="post" class="form-calificacion">
     {% csrf_token %}
     <label>Tu Calificación:</label>
     <div class="estrellas">
       {% for i in "54321" %}
+        <!-- Radios para seleccionar calificación -->
         <input type="radio" id="estrella{{ i }}" name="calificacion" value="{{ i }}">
         <label for="estrella{{ i }}">★</label>
       {% endfor %}
     </div>
 
+    <!-- Campo para comentario -->
     <label for="comentario">Comentario:</label>
     <textarea name="comentario" id="comentario" rows="4" required></textarea>
 
+    <!-- Botón de envío -->
     <button type="submit">Guardar Calificación</button>
   </form>
 
   <hr>
 
+  <!-- Comentarios anteriores -->
   <h3>Comentarios de otros clientes:</h3>
   {% if calificaciones %}
     <div id="comentarios">
@@ -67,12 +79,14 @@
             </span>
             ({{ c.puntuacion }}/5)
           </p>
+          <!-- Comentario escrito -->
           <p><strong>Comentario:</strong> {{ c.comentario }}</p>
           <p><small><strong>Fecha:</strong> {{ c.fecha|date:"Y-m-d H:i" }}</small></p>
           <hr>
         </div>
       {% endfor %}
     </div>
+    <!-- Botón para expandir/contraer comentarios -->
     {% if calificaciones|length > 3 %}
       <button id="verMasBtn" onclick="toggleComentarios()">▼ Ver más</button>
     {% endif %}
@@ -82,10 +96,12 @@
 
   <hr>
 
+  <!-- Evidencias subidas por el trabajador -->
   <h3>Evidencias del trabajador:</h3>
   {% if trabajador.evidencia_set.all %}
     <div class="grid-evidencias">
       {% for ev in trabajador.evidencia_set.all %}
+        <!-- Cada evidencia se muestra como miniatura -->
         <div class="evidencia-item" onclick="mostrarEvidencia('{{ ev.archivo.url }}', `{{ ev.descripcion|default:"Sin descripción" }}`, '{{ ev.fecha|date:"Y-m-d H:i" }}')">
           <img src="{{ ev.archivo.url }}" alt="Evidencia" class="miniatura-evidencia">
         </div>
@@ -95,7 +111,7 @@
     <p>Este trabajador aún no ha subido evidencias.</p>
   {% endif %}
 
-  <!-- Modal para evidencias -->
+  <!-- Modal que se abre al hacer clic en una evidencia -->
   <div id="modalVistaEvidencia" class="modal hidden">
     <div class="modal-contenido">
       <button onclick="cerrarModalEvidencia()" class="modal-cerrar">&times;</button>
@@ -106,7 +122,9 @@
   </div>
 </div>
 
+<!-- Estilos adicionales específicos -->
 <style>
+  /* Grid de miniaturas de evidencia */
   .grid-evidencias {
     display: flex;
     flex-wrap: wrap;
@@ -180,6 +198,7 @@
   }
 </style>
 
+<!-- Script para interacción con evidencias y comentarios -->
 <script>
   function toggleComentarios() {
     const ocultos = document.querySelectorAll('.comentario-box.oculto');
@@ -206,7 +225,6 @@
     const modal = document.getElementById('modalVistaEvidencia');
     modal.classList.remove('hidden');
     modal.style.display = 'flex';
-
     document.getElementById('imagenAmpliada').src = url;
     document.getElementById('comentarioEvidencia').innerText = comentario;
     document.getElementById('fechaEvidencia').innerText = '📅 ' + fecha;
@@ -219,6 +237,7 @@
     document.getElementById('imagenAmpliada').src = '';
   }
 
+  // Previene acciones de inspección de código
   document.addEventListener('contextmenu', e => e.preventDefault());
   document.addEventListener('keydown', e => {
     if (e.key === "F12" || (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J")) || (e.ctrlKey && e.key === "U")) {
